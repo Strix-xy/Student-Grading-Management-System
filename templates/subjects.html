@@ -1,0 +1,491 @@
+{% extends "base.html" %} {% block title %}Subjects - Student Grading System{%
+endblock %} {% block content %}
+<div class="p-7">
+  <div class="max-w-[1400px] mx-auto">
+    <!-- Header -->
+    <header class="mb-8 animate-slide-down">
+      <div
+        class="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4"
+      >
+        <div>
+          <h1 class="text-3xl font-bold text-text-dark mb-2">
+            <i
+              data-lucide="book-open"
+              class="w-8 h-8 inline mr-2 text-secondary-gold"
+            ></i>
+            Subject Management
+          </h1>
+          <p class="text-text-muted">
+            Manage all subjects and courses in the curriculum
+          </p>
+        </div>
+        <a
+          href="{{ url_for('add_subject') }}"
+          class="px-6 py-3 bg-gradient-to-r from-secondary-gold to-yellow-600 text-white font-semibold rounded-xl shadow-lg hover:shadow-2xl transform hover:-translate-y-1 transition-all duration-300"
+        >
+          <i data-lucide="book-plus" class="w-5 h-5 inline mr-2"></i>
+          Add New Subject
+        </a>
+      </div>
+    </header>
+
+    <!-- Stats -->
+    <div class="grid grid-cols-1 sm:grid-cols-4 gap-6 mb-8">
+      <div
+        class="bg-gradient-to-br from-secondary-gold to-yellow-600 rounded-xl p-6 shadow-lg text-white animate-scale-in"
+      >
+        <div class="flex items-center justify-between mb-3">
+          <i data-lucide="book-open" class="w-8 h-8"></i>
+          <span class="text-3xl font-bold" id="totalSubjects">0</span>
+        </div>
+        <p class="text-sm opacity-90">Total Subjects</p>
+      </div>
+
+      <div
+        class="bg-white rounded-xl p-6 shadow-lg animate-scale-in border-l-4 border-blue-500"
+        style="animation-delay: 0.1s"
+      >
+        <div class="flex items-center justify-between mb-3">
+          <i data-lucide="layers" class="w-8 h-8 text-blue-500"></i>
+          <span class="text-3xl font-bold text-text-dark" id="totalUnits"
+            >0</span
+          >
+        </div>
+        <p class="text-sm text-text-muted">Total Units</p>
+      </div>
+
+      <div
+        class="bg-white rounded-xl p-6 shadow-lg animate-scale-in border-l-4 border-green-500"
+        style="animation-delay: 0.2s"
+      >
+        <div class="flex items-center justify-between mb-3">
+          <i data-lucide="award" class="w-8 h-8 text-green-500"></i>
+          <span class="text-3xl font-bold text-text-dark" id="activeCourses"
+            >0</span
+          >
+        </div>
+        <p class="text-sm text-text-muted">Active Courses</p>
+      </div>
+
+      <div
+        class="bg-white rounded-xl p-6 shadow-lg animate-scale-in border-l-4 border-purple-500"
+        style="animation-delay: 0.3s"
+      >
+        <div class="flex items-center justify-between mb-3">
+          <i data-lucide="filter" class="w-8 h-8 text-purple-500"></i>
+          <span class="text-3xl font-bold text-text-dark" id="visibleCount"
+            >0</span
+          >
+        </div>
+        <p class="text-sm text-text-muted">Showing Now</p>
+      </div>
+    </div>
+
+    <!-- Filters Section -->
+    <div class="bg-white rounded-xl shadow-lg p-6 mb-8 animate-slide-up">
+      <div class="flex items-center justify-between mb-4">
+        <h3 class="text-lg font-bold text-text-dark flex items-center gap-2">
+          <i data-lucide="filter" class="w-5 h-5 text-secondary-gold"></i>
+          Filters
+        </h3>
+        <button
+          onclick="clearSubjectFilters()"
+          class="text-sm px-4 py-2 bg-gray-200 text-gray-700 rounded-lg hover:bg-gray-300 transition-all duration-200 font-medium"
+        >
+          <i data-lucide="x" class="w-4 h-4 inline mr-1"></i>
+          Clear Filters
+        </button>
+      </div>
+
+      <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+        <!-- Search -->
+        <div>
+          <label class="block text-sm font-medium text-text-dark mb-2">
+            <i data-lucide="search" class="w-4 h-4 inline mr-1"></i> Search
+            Subject
+          </label>
+          <input
+            type="text"
+            id="subjectSearch"
+            placeholder="Search by code or name..."
+            oninput="filterSubjects()"
+            class="w-full px-4 py-2 rounded-lg border border-gray-300 focus:border-secondary-gold focus:ring-2 focus:ring-secondary-gold/20 outline-none transition-all"
+          />
+        </div>
+
+        <!-- Education Level Filter -->
+        <div>
+          <label class="block text-sm font-medium text-text-dark mb-2">
+            <i data-lucide="book-open" class="w-4 h-4 inline mr-1"></i>
+            Education Level
+          </label>
+          <select
+            id="educationLevelFilter"
+            onchange="resetClassYearFilter(); filterSubjects()"
+            class="w-full px-4 py-2 rounded-lg border border-gray-300 focus:border-secondary-gold focus:ring-2 focus:ring-secondary-gold/20 outline-none transition-all"
+          >
+            <option value="">All Levels</option>
+            <option value="Primary">Primary</option>
+            <option value="Secondary">Secondary</option>
+            <option value="Tertiary">Tertiary</option>
+          </select>
+        </div>
+
+        <!-- Class Year Filter -->
+        <div>
+          <label class="block text-sm font-medium text-text-dark mb-2">
+            <i data-lucide="calendar" class="w-4 h-4 inline mr-1"></i> Class
+            Year
+          </label>
+          <select
+            id="classYearFilter"
+            onchange="filterSubjects()"
+            class="w-full px-4 py-2 rounded-lg border border-gray-300 focus:border-secondary-gold focus:ring-2 focus:ring-secondary-gold/20 outline-none transition-all"
+          >
+            <option value="">All Years</option>
+            {% for y in range(2020, 2031) %}
+            <option value="{{ y }}-{{ y+1 }}">{{ y }}-{{ y+1 }}</option>
+            {% endfor %}
+          </select>
+        </div>
+      </div>
+    </div>
+
+    <!-- Subjects Grid -->
+    {% if subjects %}
+    <div
+      id="subjectsContainer"
+      class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 animate-slide-up"
+    >
+      {% for subject in subjects %}
+      <div
+        class="subject-card bg-white rounded-xl shadow-lg hover:shadow-2xl transform hover:-translate-y-1 transition-all duration-300 overflow-hidden group"
+        data-search="{{ subject.subject_code|lower }} {{ subject.subject_name|lower }}"
+        data-education="{{ subject.education_level if subject.education_level else 'Secondary' }}"
+        data-year="{{ subject.class_year if subject.class_year else '0' }}"
+      >
+        <!-- Subject Header -->
+        <div
+          class="bg-gradient-to-r from-secondary-gold/10 to-yellow-50 px-6 py-4 border-b border-gray-100"
+        >
+          <div class="flex items-start justify-between">
+            <div class="flex-1">
+              <div class="flex items-center gap-2 mb-2">
+                <div
+                  class="h-10 w-10 bg-gradient-to-br from-secondary-gold to-yellow-600 rounded-lg flex items-center justify-center text-white font-bold"
+                >
+                  {{ subject.subject_code[:2] }}
+                </div>
+                <div>
+                  <h3
+                    class="font-bold text-text-dark group-hover:text-secondary-gold transition-colors"
+                  >
+                    {{ subject.subject_code }}
+                  </h3>
+                  <span class="text-xs text-text-muted"
+                    >{{ subject.units }} units</span
+                  >
+                </div>
+              </div>
+            </div>
+            <div class="flex gap-2">
+              <button
+                data-subject-id="{{ subject.id }}"
+                class="btn-edit-subject p-2 text-blue-600 hover:bg-blue-50 rounded-lg transition-all duration-200 transform hover:scale-110"
+                title="Edit"
+              >
+                <i data-lucide="edit" class="w-4 h-4"></i>
+              </button>
+              <button
+                data-subject-id="{{ subject.id }}"
+                data-subject-code="{{ subject.subject_code }}"
+                class="btn-delete-subject p-2 text-red-600 hover:bg-red-50 rounded-lg transition-all duration-200 transform hover:scale-110"
+                title="Delete"
+              >
+                <i data-lucide="trash-2" class="w-4 h-4"></i>
+              </button>
+            </div>
+          </div>
+        </div>
+
+        <!-- Subject Body -->
+        <div class="p-6">
+          <h4 class="text-lg font-bold text-text-dark mb-3">
+            {{ subject.subject_name }}
+          </h4>
+
+          {% if subject.description %}
+          <p class="text-sm text-text-muted mb-4 line-clamp-2">
+            {{ subject.description }}
+          </p>
+          {% else %}
+          <p class="text-sm text-text-muted mb-4 italic">
+            No description available
+          </p>
+          {% endif %}
+
+          <!-- Subject Info -->
+          <div class="space-y-2 mb-4">
+            <div class="flex items-center justify-between text-sm">
+              <span class="text-text-muted flex items-center gap-2">
+                <i data-lucide="calendar" class="w-4 h-4"></i>
+                Added
+              </span>
+              <span class="font-medium text-text-dark"
+                >{{ subject.created_at[:10] if subject.created_at else 'N/A'
+                }}</span
+              >
+            </div>
+            <div class="flex items-center justify-between text-sm">
+              <span class="text-text-muted flex items-center gap-2">
+                <i data-lucide="layers" class="w-4 h-4"></i>
+                Units
+              </span>
+              <span
+                class="px-3 py-1 bg-secondary-gold/10 text-secondary-gold rounded-full font-semibold"
+              >
+                {{ subject.units }}
+              </span>
+            </div>
+            <div class="flex items-center justify-between text-sm">
+              <span class="text-text-muted flex items-center gap-2">
+                <i data-lucide="book-open" class="w-4 h-4"></i>
+                Level
+              </span>
+              <span
+                class="px-3 py-1 bg-blue-100 text-blue-700 rounded-full font-semibold text-xs"
+              >
+                {{ subject.education_level if subject.education_level else
+                'Secondary' }}
+              </span>
+            </div>
+            {% if subject.class_year %}
+            <div class="flex items-center justify-between text-sm">
+              <span class="text-text-muted flex items-center gap-2">
+                <i data-lucide="hash" class="w-4 h-4"></i>
+                Year
+              </span>
+              <span
+                class="px-3 py-1 bg-amber-100 text-amber-700 rounded-full font-semibold text-xs"
+              >
+                Year {{ subject.class_year }}
+              </span>
+            </div>
+            {% endif %}
+          </div>
+
+          <!-- Actions -->
+          <div class="flex gap-2 pt-4 border-t border-gray-100">
+            <button
+              data-subject-id="{{ subject.id }}"
+              class="btn-view-subject flex-1 px-4 py-2 bg-primary-green text-white rounded-lg hover:bg-emerald-700 transition-all duration-200 text-sm font-medium"
+            >
+              <i data-lucide="eye" class="w-4 h-4 inline mr-1"></i>
+              View
+            </button>
+            <button
+              data-subject-id="{{ subject.id }}"
+              class="btn-edit-subject px-4 py-2 bg-gray-100 text-gray-700 rounded-lg hover:bg-gray-200 transition-all duration-200"
+              title="Edit Subject"
+            >
+              <i data-lucide="edit" class="w-4 h-4"></i>
+            </button>
+          </div>
+        </div>
+      </div>
+      {% endfor %}
+    </div>
+    {% else %}
+    <div
+      class="bg-white rounded-xl shadow-lg p-16 text-center animate-scale-in"
+    >
+      <i
+        data-lucide="book-open"
+        class="w-24 h-24 mx-auto mb-6 text-gray-300"
+      ></i>
+      <h3 class="text-2xl font-bold text-text-dark mb-3">No Subjects Found</h3>
+      <p class="text-text-muted mb-8 max-w-md mx-auto">
+        Start building your curriculum by adding your first subject or course
+      </p>
+      <a
+        href="{{ url_for('add_subject') }}"
+        class="inline-block px-8 py-4 bg-gradient-to-r from-secondary-gold to-yellow-600 text-white font-semibold rounded-xl hover:shadow-2xl transform hover:-translate-y-1 transition-all duration-300"
+      >
+        <i data-lucide="book-plus" class="w-5 h-5 inline mr-2"></i>
+        Add First Subject
+      </a>
+    </div>
+    {% endif %}
+
+    <!-- Quick Info -->
+    <div class="mt-8 grid md:grid-cols-3 gap-6 animate-fade-in">
+      <div
+        class="bg-gradient-to-br from-blue-50 to-blue-100 rounded-xl p-6 border-l-4 border-blue-500"
+      >
+        <div class="flex items-start gap-4">
+          <i
+            data-lucide="lightbulb"
+            class="w-8 h-8 text-blue-600 flex-shrink-0"
+          ></i>
+          <div>
+            <h4 class="font-bold text-blue-900 mb-2">Quick Tip</h4>
+            <p class="text-sm text-blue-800">
+              Organize subjects by department or year level for easier
+              management
+            </p>
+          </div>
+        </div>
+      </div>
+
+      <div
+        class="bg-gradient-to-br from-green-50 to-green-100 rounded-xl p-6 border-l-4 border-green-500"
+      >
+        <div class="flex items-start gap-4">
+          <i
+            data-lucide="check-circle"
+            class="w-8 h-8 text-green-600 flex-shrink-0"
+          ></i>
+          <div>
+            <h4 class="font-bold text-green-900 mb-2">Best Practice</h4>
+            <p class="text-sm text-green-800">
+              Add clear descriptions to help students understand course content
+            </p>
+          </div>
+        </div>
+      </div>
+
+      <div
+        class="bg-gradient-to-br from-purple-50 to-purple-100 rounded-xl p-6 border-l-4 border-purple-500"
+      >
+        <div class="flex items-start gap-4">
+          <i
+            data-lucide="zap"
+            class="w-8 h-8 text-purple-600 flex-shrink-0"
+          ></i>
+          <div>
+            <h4 class="font-bold text-purple-900 mb-2">Pro Feature</h4>
+            <p class="text-sm text-purple-800">
+              Track subjects by education level and year for better organization
+            </p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+  // Calculate stats on page load
+  function updateStats() {
+    const subjects = {{ subjects|tojson }};
+    const totalUnits = subjects.reduce((sum, subject) => sum + (subject.units || 0), 0);
+    document.getElementById('totalSubjects').textContent = subjects.length;
+    document.getElementById('totalUnits').textContent = totalUnits;
+    document.getElementById('activeCourses').textContent = subjects.length;
+    updateVisibleCount();
+  }
+
+  // Filter subjects by search, education level, and class year
+  function filterSubjects() {
+    const searchTerm = document.getElementById('subjectSearch').value.toLowerCase();
+    const educationLevel = document.getElementById('educationLevelFilter').value;
+    const classYear = document.getElementById('classYearFilter').value;
+
+    const cards = document.querySelectorAll('.subject-card');
+    let visibleCount = 0;
+
+    cards.forEach(card => {
+      const searchText = card.getAttribute('data-search');
+      const cardEducation = card.getAttribute('data-education');
+      const cardYear = card.getAttribute('data-year');
+
+      const matchSearch = searchText.includes(searchTerm);
+      const matchEducation = !educationLevel || cardEducation === educationLevel;
+      const matchYear = !classYear || cardYear === classYear;
+
+      if (matchSearch && matchEducation && matchYear) {
+        card.style.display = '';
+        visibleCount++;
+      } else {
+        card.style.display = 'none';
+      }
+    });
+
+    updateVisibleCount();
+  }
+
+  // Clear all filters
+  function clearSubjectFilters() {
+    document.getElementById('subjectSearch').value = '';
+    document.getElementById('educationLevelFilter').value = '';
+    document.getElementById('classYearFilter').value = '';
+    filterSubjects();
+  }
+
+  // Reset class year filter when education level changes
+  function resetClassYearFilter() {
+    document.getElementById('classYearFilter').value = '';
+  }
+
+  // Update visible count stat
+  function updateVisibleCount() {
+    const cards = document.querySelectorAll('.subject-card');
+    const visibleCount = Array.from(cards).filter(card => card.style.display !== 'none').length;
+    document.getElementById('visibleCount').textContent = visibleCount;
+  }
+
+  // View subject details
+  function viewSubject(id) {
+    alert('View subject ' + id + ' - Backend handler needed');
+    // TODO: Redirect to view_subject route
+  }
+
+  // Edit subject
+  function editSubject(id) {
+    alert('Edit subject ' + id + ' - Redirect to edit_subject route');
+    // TODO: window.location.href = `/subjects/edit/${id}`;
+  }
+
+  // Delete subject
+  function deleteSubject(id, code) {
+    if (confirm(`Are you sure you want to delete subject ${code}? This action cannot be undone.`)) {
+      alert('Delete subject ' + id + ' - Backend handler needed');
+      // TODO: Send DELETE request to backend
+    }
+  }
+
+  // Initialize on page load
+  document.addEventListener('DOMContentLoaded', updateStats);
+
+  // Attach event listeners for subject action buttons
+  document.addEventListener('DOMContentLoaded', function(){
+    // View buttons
+    document.querySelectorAll('.btn-view-subject').forEach(btn => {
+      btn.addEventListener('click', function(){
+        const id = this.dataset.subjectId;
+        window.location.href = `/subjects/view/${id}`;
+      });
+    });
+
+    // Edit buttons
+    document.querySelectorAll('.btn-edit-subject').forEach(btn => {
+      btn.addEventListener('click', function(){
+        const id = this.dataset.subjectId;
+        window.location.href = `/subjects/edit/${id}`;
+      });
+    });
+
+    // Delete buttons
+    document.querySelectorAll('.btn-delete-subject').forEach(btn => {
+      btn.addEventListener('click', function(){
+        const id = this.dataset.subjectId;
+        const code = this.dataset.subjectCode;
+        if (!confirm(`Are you sure you want to delete subject ${code}?`)) return;
+        fetch(`/subjects/delete/${id}`, { method: 'POST' })
+          .then(r => { if (r.status === 204 || r.ok) window.location.reload(); else alert('Failed to delete'); })
+          .catch(() => alert('Network error'));
+      });
+    });
+  });
+</script>
+{% endblock %}

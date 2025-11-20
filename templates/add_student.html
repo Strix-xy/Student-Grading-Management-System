@@ -1,0 +1,556 @@
+{% extends "base.html" %} {% block title %}Add Student - Student Grading
+System{% endblock %} {% block content %}
+<div class="min-h-screen p-7">
+  <div class="max-w-4xl mx-auto">
+    <!-- Header -->
+    <div class="mb-8 animate-slide-down">
+      <a
+        href="{{ url_for('students') }}"
+        class="inline-flex items-center text-primary-green hover:text-emerald-700 transition-colors mb-4"
+      >
+        <i data-lucide="arrow-left" class="w-5 h-5 mr-2"></i>
+        Back to Students
+      </a>
+      <h1 class="text-3xl font-bold text-text-dark mb-2">
+        <i
+          data-lucide="user-plus"
+          class="w-8 h-8 inline mr-2 text-primary-green"
+        ></i>
+        Add New Student
+      </h1>
+      <p class="text-text-muted">
+        Register a new student in the grading system
+      </p>
+    </div>
+
+    <!-- Education Level Tabs -->
+    <div class="mb-8 flex gap-4 flex-wrap animate-slide-up">
+      <button
+        onclick="switchLevel('primary')"
+        id="tab-primary"
+        class="px-6 py-3 rounded-xl font-semibold transition-all duration-200 bg-gradient-to-r from-primary-green to-emerald-600 text-white shadow-lg"
+      >
+        <i data-lucide="book-open" class="w-5 h-5 inline mr-2"></i>
+        Primary (Grades 1-6)
+      </button>
+      <button
+        onclick="switchLevel('secondary')"
+        id="tab-secondary"
+        class="px-6 py-3 rounded-xl font-semibold transition-all duration-200 bg-gray-200 text-text-dark hover:bg-gray-300"
+      >
+        <i data-lucide="book-open" class="w-5 h-5 inline mr-2"></i>
+        Secondary (Grades 7-10)
+      </button>
+      <button
+        onclick="switchLevel('seniorhigh')"
+        id="tab-seniorhigh"
+        class="px-6 py-3 rounded-xl font-semibold transition-all duration-200 bg-gray-200 text-text-dark hover:bg-gray-300"
+      >
+        <i data-lucide="book-open" class="w-5 h-5 inline mr-2"></i>
+        Senior High (Grades 11-12)
+      </button>
+      <button
+        onclick="switchLevel('tertiary')"
+        id="tab-tertiary"
+        class="px-6 py-3 rounded-xl font-semibold transition-all duration-200 bg-gray-200 text-text-dark hover:bg-gray-300"
+      >
+        <i data-lucide="book-open" class="w-5 h-5 inline mr-2"></i>
+        Tertiary (College)
+      </button>
+    </div>
+
+    <!-- Form Card -->
+    <div
+      class="bg-white rounded-2xl shadow-2xl overflow-hidden animate-scale-in"
+    >
+      <div class="bg-gradient-to-r from-primary-green to-emerald-600 px-8 py-6">
+        <h2 class="text-2xl font-bold text-white">Student Information</h2>
+        <p class="text-white/90 text-sm mt-1" id="levelDescription">
+          Fill in all required fields to register a student
+        </p>
+      </div>
+
+      <form method="POST" action="{{ url_for('add_student') }}" class="p-8">
+        <input
+          type="hidden"
+          id="education_level_hidden"
+          name="education_level"
+          value="Primary"
+        />
+
+        <!-- Common Fields -->
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+          <!-- Student ID -->
+          <div class="group md:col-span-2">
+            <label
+              for="student_id"
+              class="block text-sm font-semibold text-text-dark mb-2"
+            >
+              <i
+                data-lucide="hash"
+                class="w-4 h-4 inline mr-1 text-primary-green"
+              ></i>
+              Student ID <span class="text-red-500">*</span>
+            </label>
+            <input
+              type="text"
+              id="student_id"
+              name="student_id"
+              required
+              class="w-full px-4 py-3 border-2 border-gray-200 rounded-xl focus:border-primary-green focus:ring-2 focus:ring-primary-green/20 outline-none transition-all duration-200 group-hover:border-gray-300"
+              placeholder="e.g., 2024-001234"
+            />
+            <p class="text-xs text-text-muted mt-1">
+              Unique identifier for the student
+            </p>
+          </div>
+
+          <!-- First Name -->
+          <div class="group">
+            <label
+              for="first_name"
+              class="block text-sm font-semibold text-text-dark mb-2"
+            >
+              <i
+                data-lucide="user"
+                class="w-4 h-4 inline mr-1 text-primary-green"
+              ></i>
+              First Name <span class="text-red-500">*</span>
+            </label>
+            <input
+              type="text"
+              id="first_name"
+              name="first_name"
+              required
+              class="w-full px-4 py-3 border-2 border-gray-200 rounded-xl focus:border-primary-green focus:ring-2 focus:ring-primary-green/20 outline-none transition-all duration-200 group-hover:border-gray-300"
+              placeholder="Enter first name"
+            />
+          </div>
+
+          <!-- Last Name -->
+          <div class="group">
+            <label
+              for="last_name"
+              class="block text-sm font-semibold text-text-dark mb-2"
+            >
+              <i
+                data-lucide="user"
+                class="w-4 h-4 inline mr-1 text-primary-green"
+              ></i>
+              Last Name <span class="text-red-500">*</span>
+            </label>
+            <input
+              type="text"
+              id="last_name"
+              name="last_name"
+              required
+              class="w-full px-4 py-3 border-2 border-gray-200 rounded-xl focus:border-primary-green focus:ring-2 focus:ring-primary-green/20 outline-none transition-all duration-200 group-hover:border-gray-300"
+              placeholder="Enter last name"
+            />
+          </div>
+
+          <!-- Email -->
+          <div class="group md:col-span-2">
+            <label
+              for="email"
+              class="block text-sm font-semibold text-text-dark mb-2"
+            >
+              <i
+                data-lucide="mail"
+                class="w-4 h-4 inline mr-1 text-primary-green"
+              ></i>
+              Email Address <span class="text-red-500">*</span>
+            </label>
+            <input
+              type="email"
+              id="email"
+              name="email"
+              required
+              class="w-full px-4 py-3 border-2 border-gray-200 rounded-xl focus:border-primary-green focus:ring-2 focus:ring-primary-green/20 outline-none transition-all duration-200 group-hover:border-gray-300"
+              placeholder="student@example.com"
+            />
+            <p class="text-xs text-text-muted mt-1">
+              Used for communication and notifications
+            </p>
+          </div>
+
+          <!-- School Year (All Levels) -->
+          <div class="group md:col-span-2">
+            <label
+              for="school_year"
+              class="block text-sm font-semibold text-text-dark mb-2"
+            >
+              <i
+                data-lucide="calendar"
+                class="w-4 h-4 inline mr-1 text-primary-green"
+              ></i>
+              School Year <span class="text-red-500">*</span>
+            </label>
+            <select
+              id="school_year"
+              name="school_year"
+              required
+              class="w-full px-4 py-3 border-2 border-gray-200 rounded-xl focus:border-primary-green focus:ring-2 focus:ring-primary-green/20 outline-none transition-all duration-200 group-hover:border-gray-300"
+            >
+              <option value="">Select School Year</option>
+              <option value="2023-2024">2023-2024</option>
+              <option value="2024-2025">2024-2025</option>
+              <option value="2025-2026">2025-2026</option>
+              <option value="2026-2027">2026-2027</option>
+            </select>
+          </div>
+
+          <!-- Primary Section -->
+          <div id="primary-fields" class="md:col-span-2">
+            <div class="group">
+              <label
+                for="primary_grade"
+                class="block text-sm font-semibold text-text-dark mb-2"
+              >
+                <i
+                  data-lucide="graduation-cap"
+                  class="w-4 h-4 inline mr-1 text-primary-green"
+                ></i>
+                Grade Level <span class="text-red-500">*</span>
+              </label>
+              <select
+                id="primary_grade"
+                name="year_level"
+                class="w-full px-4 py-3 border-2 border-gray-200 rounded-xl focus:border-primary-green focus:ring-2 focus:ring-primary-green/20 outline-none transition-all duration-200"
+              >
+                <option value="">Select Grade</option>
+                <option value="Grade 1">Grade 1</option>
+                <option value="Grade 2">Grade 2</option>
+                <option value="Grade 3">Grade 3</option>
+                <option value="Grade 4">Grade 4</option>
+                <option value="Grade 5">Grade 5</option>
+                <option value="Grade 6">Grade 6</option>
+              </select>
+            </div>
+            <div class="group mt-4">
+              <label
+                for="primary_section"
+                class="block text-sm font-semibold text-text-dark mb-2"
+              >
+                <i
+                  data-lucide="layout-grid"
+                  class="w-4 h-4 inline mr-1 text-primary-green"
+                ></i>
+                Program <span class="text-red-500">*</span>
+              </label>
+              <select
+                id="primary_section"
+                name="section"
+                class="w-full px-4 py-3 border-2 border-gray-200 rounded-xl focus:border-primary-green focus:ring-2 focus:ring-primary-green/20 outline-none transition-all duration-200"
+              >
+                <option value="">Select Section</option>
+                <option value="Grade 1-A">Grade 1-A</option>
+                <option value="Grade 1-B">Grade 1-B</option>
+                <option value="Grade 2-A">Grade 2-A</option>
+                <option value="Grade 2-B">Grade 2-B</option>
+                <option value="Grade 3-A">Grade 3-A</option>
+                <option value="Grade 3-B">Grade 3-B</option>
+                <option value="Grade 4-A">Grade 4-A</option>
+                <option value="Grade 4-B">Grade 4-B</option>
+                <option value="Grade 5-A">Grade 5-A</option>
+                <option value="Grade 5-B">Grade 5-B</option>
+                <option value="Grade 6-A">Grade 6-A</option>
+                <option value="Grade 6-B">Grade 6-B</option>
+              </select>
+            </div>
+            <div
+              class="group mt-4 p-4 bg-blue-50 border-l-4 border-blue-500 rounded-lg"
+            >
+              <p class="text-xs text-blue-800">
+                Primary level students typically range from 6-12 years old
+              </p>
+            </div>
+          </div>
+
+          <!-- Secondary Section -->
+          <div id="secondary-fields" class="md:col-span-2 hidden">
+            <div class="group">
+              <label
+                for="secondary_grade"
+                class="block text-sm font-semibold text-text-dark mb-2"
+              >
+                <i
+                  data-lucide="graduation-cap"
+                  class="w-4 h-4 inline mr-1 text-primary-green"
+                ></i>
+                Year Level (Grades 7-10) <span class="text-red-500">*</span>
+              </label>
+              <select
+                id="secondary_grade"
+                name="year_level"
+                class="w-full px-4 py-3 border-2 border-gray-200 rounded-xl focus:border-primary-green focus:ring-2 focus:ring-primary-green/20 outline-none transition-all duration-200"
+              >
+                <option value="">Select Year</option>
+                <option value="Grade 7">Grade 7</option>
+                <option value="Grade 8">Grade 8</option>
+                <option value="Grade 9">Grade 9</option>
+                <option value="Grade 10">Grade 10</option>
+              </select>
+            </div>
+            <div class="group mt-4">
+              <label
+                for="secondary_section"
+                class="block text-sm font-semibold text-text-dark mb-2"
+              >
+                <i
+                  data-lucide="layout-grid"
+                  class="w-4 h-4 inline mr-1 text-primary-green"
+                ></i>
+                Program <span class="text-red-500">*</span>
+              </label>
+              <select
+                id="secondary_section"
+                name="section"
+                class="w-full px-4 py-3 border-2 border-gray-200 rounded-xl focus:border-primary-green focus:ring-2 focus:ring-primary-green/20 outline-none transition-all duration-200"
+              >
+                <option value="">Select Section</option>
+                <option value="Grade 7-A">Grade 7-A</option>
+                <option value="Grade 7-B">Grade 7-B</option>
+                <option value="Grade 8-A">Grade 8-A</option>
+                <option value="Grade 8-B">Grade 8-B</option>
+                <option value="Grade 9-A">Grade 9-A</option>
+                <option value="Grade 9-B">Grade 9-B</option>
+                <option value="Grade 10-A">Grade 10-A</option>
+                <option value="Grade 10-B">Grade 10-B</option>
+              </select>
+            </div>
+            <div
+              class="group mt-4 p-4 bg-blue-50 border-l-4 border-blue-500 rounded-lg"
+            >
+              <p class="text-xs text-blue-800">
+                Secondary level covers Junior High School (Grades 7-10)
+              </p>
+            </div>
+          </div>
+
+          <!-- Senior High Section -->
+          <div id="seniorhigh-fields" class="md:col-span-2 hidden">
+            <div class="group">
+              <label
+                for="seniorhigh_grade"
+                class="block text-sm font-semibold text-text-dark mb-2"
+              >
+                <i
+                  data-lucide="graduation-cap"
+                  class="w-4 h-4 inline mr-1 text-primary-green"
+                ></i>
+                Year Level (Grades 11-12) <span class="text-red-500">*</span>
+              </label>
+              <select
+                id="seniorhigh_grade"
+                name="year_level"
+                class="w-full px-4 py-3 border-2 border-gray-200 rounded-xl focus:border-primary-green focus:ring-2 focus:ring-primary-green/20 outline-none transition-all duration-200"
+              >
+                <option value="">Select Year</option>
+                <option value="Grade 11">Grade 11</option>
+                <option value="Grade 12">Grade 12</option>
+              </select>
+            </div>
+            <div class="group mt-4">
+              <label
+                for="seniorhigh_strand"
+                class="block text-sm font-semibold text-text-dark mb-2"
+              >
+                <i
+                  data-lucide="layout-grid"
+                  class="w-4 h-4 inline mr-1 text-primary-green"
+                ></i>
+                Strand <span class="text-red-500">*</span>
+              </label>
+              <select
+                id="seniorhigh_strand"
+                name="section"
+                class="w-full px-4 py-3 border-2 border-gray-200 rounded-xl focus:border-primary-green focus:ring-2 focus:ring-primary-green/20 outline-none transition-all duration-200"
+              >
+                <option value="">Select Strand</option>
+                <option value="Grade 11-STEM">STEM</option>
+                <option value="Grade 11-ABM">
+                  ABM (Accountancy, Business, Management)
+                </option>
+                <option value="Grade 11-HUMSS">
+                  HUMSS (Humanities and Social Sciences)
+                </option>
+                <option value="Grade 11-TVL">
+                  TVL (Technical-Vocational-Livelihood)
+                </option>
+                <option value="Grade 12-STEM">STEM</option>
+                <option value="Grade 12-ABM">
+                  ABM (Accountancy, Business, Management)
+                </option>
+                <option value="Grade 12-HUMSS">
+                  HUMSS (Humanities and Social Sciences)
+                </option>
+                <option value="Grade 12-TVL">
+                  TVL (Technical-Vocational-Livelihood)
+                </option>
+              </select>
+            </div>
+            <div
+              class="group mt-4 p-4 bg-blue-50 border-l-4 border-blue-500 rounded-lg"
+            >
+              <p class="text-xs text-blue-800">
+                Senior High offers different strands. Students choose based on
+                their career interests
+              </p>
+            </div>
+          </div>
+
+          <!-- Tertiary Section -->
+          <div id="tertiary-fields" class="md:col-span-2 hidden">
+            <div class="group">
+              <label
+                for="tertiary_year"
+                class="block text-sm font-semibold text-text-dark mb-2"
+              >
+                <i
+                  data-lucide="graduation-cap"
+                  class="w-4 h-4 inline mr-1 text-primary-green"
+                ></i>
+                Year/Level <span class="text-red-500">*</span>
+              </label>
+              <select
+                id="tertiary_year"
+                name="year_level"
+                class="w-full px-4 py-3 border-2 border-gray-200 rounded-xl focus:border-primary-green focus:ring-2 focus:ring-primary-green/20 outline-none transition-all duration-200"
+              >
+                <option value="">Select Year</option>
+                <option value="1st Year">1st Year</option>
+                <option value="2nd Year">2nd Year</option>
+                <option value="3rd Year">3rd Year</option>
+                <option value="4th Year">4th Year</option>
+                <option value="Graduate">Graduate</option>
+              </select>
+            </div>
+            <div class="group mt-4">
+              <label
+                for="tertiary_program"
+                class="block text-sm font-semibold text-text-dark mb-2"
+              >
+                <i
+                  data-lucide="book-open"
+                  class="w-4 h-4 inline mr-1 text-primary-green"
+                ></i>
+                Program/Course <span class="text-red-500">*</span>
+              </label>
+              <input
+                type="text"
+                id="tertiary_program"
+                name="section"
+                placeholder="e.g., Bachelor of Science in Computer Science"
+                class="w-full px-4 py-3 border-2 border-gray-200 rounded-xl focus:border-primary-green focus:ring-2 focus:ring-primary-green/20 outline-none transition-all duration-200"
+              />
+            </div>
+            <div
+              class="group mt-4 p-4 bg-blue-50 border-l-4 border-blue-500 rounded-lg"
+            >
+              <p class="text-xs text-blue-800">
+                College students use semestral grading system. Grades use 2
+                semesters per academic year
+              </p>
+            </div>
+          </div>
+        </div>
+
+        <!-- Information Box -->
+        <div
+          class="mt-8 p-4 bg-green-50 border-l-4 border-green-500 rounded-lg"
+        >
+          <div class="flex items-start gap-3">
+            <i
+              data-lucide="info"
+              class="w-5 h-5 text-green-500 flex-shrink-0 mt-0.5"
+            ></i>
+            <div>
+              <h4 class="text-sm font-semibold text-green-900 mb-1">
+                Important Information
+              </h4>
+              <p class="text-xs text-green-800">
+                • Student ID must be unique and cannot be changed later<br />
+                • Email address will be used for system notifications<br />
+                • All fields marked with <span class="text-red-500">*</span> are
+                required
+              </p>
+            </div>
+          </div>
+        </div>
+
+        <!-- Action Buttons -->
+        <div class="mt-8 flex flex-col sm:flex-row gap-4">
+          <button
+            type="submit"
+            class="flex-1 px-6 py-4 bg-gradient-to-r from-primary-green to-emerald-600 text-white font-semibold rounded-xl shadow-lg hover:shadow-2xl transform hover:-translate-y-1 transition-all duration-300 flex items-center justify-center gap-2"
+          >
+            <i data-lucide="check" class="w-5 h-5"></i>
+            Add Student
+          </button>
+          <a
+            href="{{ url_for('students') }}"
+            class="flex-1 px-6 py-4 bg-gray-100 text-gray-700 font-semibold rounded-xl hover:bg-gray-200 transition-all duration-200 flex items-center justify-center gap-2"
+          >
+            <i data-lucide="x" class="w-5 h-5"></i>
+            Cancel
+          </a>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>
+
+<script>
+  function switchLevel(level) {
+    // Update tabs
+    document.querySelectorAll('[id^="tab-"]').forEach((tab) => {
+      tab.classList.remove(
+        "from-primary-green",
+        "to-emerald-600",
+        "text-white",
+        "shadow-lg"
+      );
+      tab.classList.add("bg-gray-200", "text-text-dark", "hover:bg-gray-300");
+    });
+
+    document
+      .getElementById("tab-" + level)
+      .classList.remove("bg-gray-200", "text-text-dark", "hover:bg-gray-300");
+    document
+      .getElementById("tab-" + level)
+      .classList.add(
+        "from-primary-green",
+        "to-emerald-600",
+        "text-white",
+        "shadow-lg",
+        "bg-gradient-to-r"
+      );
+
+    // Update form fields
+    document.querySelectorAll('[id$="-fields"]').forEach((field) => {
+      field.classList.add("hidden");
+    });
+    document.getElementById(level + "-fields").classList.remove("hidden");
+
+    // Update hidden education level
+    let educationLevel = "Secondary";
+    if (level === "primary") educationLevel = "Primary";
+    if (level === "tertiary") educationLevel = "Tertiary";
+    if (level === "seniorhigh") educationLevel = "Secondary"; // Senior high is still secondary
+
+    document.getElementById("education_level_hidden").value = educationLevel;
+
+    // Update description
+    const descriptions = {
+      primary: "Fill in student information for Primary level (Grades 1-6)",
+      secondary:
+        "Fill in student information for Secondary level (Grades 7-10)",
+      seniorhigh: "Fill in student information for Senior High (Grades 11-12)",
+      tertiary: "Fill in student information for College/Tertiary level",
+    };
+    document.getElementById("levelDescription").textContent =
+      descriptions[level];
+  }
+</script>
+{% endblock %}

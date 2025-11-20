@@ -1,0 +1,264 @@
+{% extends "base.html" %} {% block title %}About - Student Grading System{%
+endblock %} {% block content %}
+<div class="min-h-screen py-12 px-6">
+  <div class="max-w-5xl mx-auto">
+    <!-- Header -->
+    <div class="text-center mb-16 animate-fade-in">
+      <div
+        class="h-24 w-24 mx-auto mb-6 rounded-2xl bg-gradient-to-br from-primary-green to-secondary-gold grid place-items-center text-white shadow-2xl transform hover:rotate-6 transition-transform duration-300 animate-scale-in"
+      >
+        <span class="text-4xl font-extrabold">GS</span>
+      </div>
+      <h1 class="text-5xl font-extrabold text-text-dark mb-4">
+        About Our System
+      </h1>
+      <p class="text-xl text-text-muted max-w-2xl mx-auto">
+        Empowering educators with modern tools for efficient grade management
+        and student performance tracking.
+      </p>
+    </div>
+
+    <!-- Mission Section -->
+    <div class="bg-white rounded-2xl p-8 shadow-xl mb-8 animate-slide-up">
+      <div class="flex items-start gap-4">
+        <div
+          class="h-12 w-12 bg-primary-green/10 rounded-xl flex items-center justify-center flex-shrink-0"
+        >
+          <i data-lucide="target" class="w-6 h-6 text-primary-green"></i>
+        </div>
+        <div>
+          <h2 class="text-2xl font-bold text-text-dark mb-3">Our Mission</h2>
+          <p class="text-text-muted leading-relaxed">
+            We aim to simplify academic management by providing an intuitive,
+            efficient, and reliable platform for educators to track student
+            performance, manage grades, and generate insightful reports. Our
+            system eliminates the complexity of traditional grading methods
+            while maintaining accuracy and transparency.
+          </p>
+        </div>
+      </div>
+    </div>
+
+    <!-- Features Grid -->
+    <div class="grid md:grid-cols-2 gap-6 mb-8">
+      <div
+        class="bg-gradient-to-br from-primary-green/5 to-emerald-50 rounded-2xl p-6 shadow-lg animate-slide-up"
+        style="animation-delay: 0.1s"
+      >
+        <div
+          class="h-12 w-12 bg-primary-green rounded-xl flex items-center justify-center mb-4"
+        >
+          <i data-lucide="shield-check" class="w-6 h-6 text-white"></i>
+        </div>
+        <h3 class="text-xl font-bold text-text-dark mb-2">Secure & Reliable</h3>
+        <p class="text-text-muted">
+          Your data is protected with industry-standard security measures and
+          encrypted storage.
+        </p>
+      </div>
+
+      <div
+        class="bg-gradient-to-br from-secondary-gold/5 to-yellow-50 rounded-2xl p-6 shadow-lg animate-slide-up"
+        style="animation-delay: 0.2s"
+      >
+        <div
+          class="h-12 w-12 bg-secondary-gold rounded-xl flex items-center justify-center mb-4"
+        >
+          <i data-lucide="zap" class="w-6 h-6 text-white"></i>
+        </div>
+        <h3 class="text-xl font-bold text-text-dark mb-2">Fast & Efficient</h3>
+        <p class="text-text-muted">
+          Lightning-fast performance with optimized database queries and
+          responsive interface.
+        </p>
+      </div>
+
+      <div
+        class="bg-gradient-to-br from-blue-500/5 to-blue-50 rounded-2xl p-6 shadow-lg animate-slide-up"
+        style="animation-delay: 0.3s"
+      >
+        <div
+          class="h-12 w-12 bg-blue-500 rounded-xl flex items-center justify-center mb-4"
+        >
+          <i data-lucide="bar-chart-2" class="w-6 h-6 text-white"></i>
+        </div>
+        <h3 class="text-xl font-bold text-text-dark mb-2">
+          Detailed Analytics
+        </h3>
+        <p class="text-text-muted">
+          Comprehensive reports and visualizations to understand student
+          performance trends.
+        </p>
+      </div>
+
+      <div
+        class="bg-gradient-to-br from-purple-500/5 to-purple-50 rounded-2xl p-6 shadow-lg animate-slide-up"
+        style="animation-delay: 0.4s"
+      >
+        <div
+          class="h-12 w-12 bg-purple-500 rounded-xl flex items-center justify-center mb-4"
+        >
+          <i data-lucide="users" class="w-6 h-6 text-white"></i>
+        </div>
+        <h3 class="text-xl font-bold text-text-dark mb-2">User-Friendly</h3>
+        <p class="text-text-muted">
+          Intuitive interface designed for educators with minimal technical
+          knowledge required.
+        </p>
+      </div>
+    </div>
+
+    <!-- Key Features -->
+    <div
+      class="bg-white rounded-2xl p-8 shadow-xl mb-8 animate-slide-up"
+      style="animation-delay: 0.5s"
+    >
+      <h2
+        class="text-2xl font-bold text-text-dark mb-6 flex items-center gap-3"
+      >
+        <i data-lucide="check-circle" class="w-7 h-7 text-primary-green"></i>
+        Key Features
+      </h2>
+      <div class="grid md:grid-cols-2 gap-4">
+        <div class="flex items-start gap-3">
+          <i
+            data-lucide="check"
+            class="w-5 h-5 text-primary-green flex-shrink-0 mt-1"
+          ></i>
+          <p class="text-text-muted">
+            Comprehensive student profile management
+          </p>
+        </div>
+        <div class="flex items-start gap-3">
+          <i
+            data-lucide="check"
+            class="w-5 h-5 text-primary-green flex-shrink-0 mt-1"
+          ></i>
+          <p class="text-text-muted">Multi-subject grade tracking system</p>
+        </div>
+        <div class="flex items-start gap-3">
+          <i
+            data-lucide="check"
+            class="w-5 h-5 text-primary-green flex-shrink-0 mt-1"
+          ></i>
+          <p class="text-text-muted">
+            Automatic grade calculations and averages
+          </p>
+        </div>
+        <div class="flex items-start gap-3">
+          <i
+            data-lucide="check"
+            class="w-5 h-5 text-primary-green flex-shrink-0 mt-1"
+          ></i>
+          <p class="text-text-muted">Real-time performance statistics</p>
+        </div>
+        <div class="flex items-start gap-3">
+          <i
+            data-lucide="check"
+            class="w-5 h-5 text-primary-green flex-shrink-0 mt-1"
+          ></i>
+          <p class="text-text-muted">Secure authentication and authorization</p>
+        </div>
+        <div class="flex items-start gap-3">
+          <i
+            data-lucide="check"
+            class="w-5 h-5 text-primary-green flex-shrink-0 mt-1"
+          ></i>
+          <p class="text-text-muted">Export and print-ready reports</p>
+        </div>
+        <div class="flex items-start gap-3">
+          <i
+            data-lucide="check"
+            class="w-5 h-5 text-primary-green flex-shrink-0 mt-1"
+          ></i>
+          <p class="text-text-muted">Mobile-responsive design</p>
+        </div>
+        <div class="flex items-start gap-3">
+          <i
+            data-lucide="check"
+            class="w-5 h-5 text-primary-green flex-shrink-0 mt-1"
+          ></i>
+          <p class="text-text-muted">Quarter-based grade organization</p>
+        </div>
+      </div>
+    </div>
+
+    <!-- Technology Stack -->
+    <div
+      class="bg-gradient-to-br from-gray-50 to-gray-100 rounded-2xl p-8 shadow-xl mb-8 animate-slide-up"
+      style="animation-delay: 0.6s"
+    >
+      <h2
+        class="text-2xl font-bold text-text-dark mb-6 flex items-center gap-3"
+      >
+        <i data-lucide="code" class="w-7 h-7 text-primary-green"></i>
+        Technology Stack
+      </h2>
+      <div class="grid md:grid-cols-3 gap-6">
+        <div class="text-center">
+          <div
+            class="h-16 w-16 bg-blue-500 rounded-xl flex items-center justify-center mx-auto mb-3 transform hover:scale-110 transition-transform"
+          >
+            <i data-lucide="database" class="w-8 h-8 text-white"></i>
+          </div>
+          <h4 class="font-bold text-text-dark mb-1">Backend</h4>
+          <p class="text-sm text-text-muted">Python Flask + SQLite</p>
+        </div>
+        <div class="text-center">
+          <div
+            class="h-16 w-16 bg-purple-500 rounded-xl flex items-center justify-center mx-auto mb-3 transform hover:scale-110 transition-transform"
+          >
+            <i data-lucide="layout" class="w-8 h-8 text-white"></i>
+          </div>
+          <h4 class="font-bold text-text-dark mb-1">Frontend</h4>
+          <p class="text-sm text-text-muted">HTML5 + Tailwind CSS</p>
+        </div>
+        <div class="text-center">
+          <div
+            class="h-16 w-16 bg-green-500 rounded-xl flex items-center justify-center mx-auto mb-3 transform hover:scale-110 transition-transform"
+          >
+            <i data-lucide="lock" class="w-8 h-8 text-white"></i>
+          </div>
+          <h4 class="font-bold text-text-dark mb-1">Security</h4>
+          <p class="text-sm text-text-muted">Password Hashing + Sessions</p>
+        </div>
+      </div>
+    </div>
+
+    <!-- CTA Section -->
+    <div
+      class="text-center bg-gradient-to-r from-primary-green to-emerald-600 rounded-2xl p-12 shadow-2xl text-white animate-scale-in"
+    >
+      <h2 class="text-3xl font-bold mb-4">
+        Ready to Transform Your Grading Process?
+      </h2>
+      <p class="text-lg mb-8 opacity-90">
+        Join us today and experience the future of academic management
+      </p>
+      {% if not session.user_id %}
+      <div class="flex flex-col sm:flex-row gap-4 justify-center">
+        <a
+          href="{{ url_for('signup') }}"
+          class="px-8 py-4 bg-white text-primary-green font-semibold rounded-xl hover:shadow-2xl transform hover:-translate-y-1 transition-all duration-300"
+        >
+          Get Started Free
+        </a>
+        <a
+          href="{{ url_for('login') }}"
+          class="px-8 py-4 bg-transparent border-2 border-white text-white font-semibold rounded-xl hover:bg-white hover:text-primary-green transition-all duration-300"
+        >
+          Sign In
+        </a>
+      </div>
+      {% else %}
+      <a
+        href="{{ url_for('dashboard') }}"
+        class="inline-block px-8 py-4 bg-white text-primary-green font-semibold rounded-xl hover:shadow-2xl transform hover:-translate-y-1 transition-all duration-300"
+      >
+        Go to Dashboard
+      </a>
+      {% endif %}
+    </div>
+  </div>
+</div>
+{% endblock %}

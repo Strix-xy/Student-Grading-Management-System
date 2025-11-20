@@ -1,0 +1,440 @@
+{% extends "base.html" %} {% block title %}Students - Student Grading System{%
+endblock %} {% block content %}
+<div class="p-7">
+  <div class="max-w-[1400px] mx-auto">
+    <!-- Header -->
+    <header class="mb-8 animate-slide-down">
+      <div
+        class="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4"
+      >
+        <div>
+          <h1 class="text-3xl font-bold text-text-dark mb-2">
+            <i
+              data-lucide="users"
+              class="w-8 h-8 inline mr-2 text-primary-green"
+            ></i>
+            Student Management
+          </h1>
+          <p class="text-text-muted">
+            Manage all registered students in the system
+          </p>
+        </div>
+        <a
+          href="{{ url_for('add_student') }}"
+          class="px-6 py-3 bg-gradient-to-r from-primary-green to-emerald-600 text-white font-semibold rounded-xl shadow-lg hover:shadow-2xl transform hover:-translate-y-1 transition-all duration-300"
+        >
+          <i data-lucide="user-plus" class="w-5 h-5 inline mr-2"></i>
+          Add New Student
+        </a>
+      </div>
+    </header>
+
+    <!-- Search and Filter -->
+    <div class="bg-white rounded-xl p-4 shadow-md mb-6 animate-slide-up">
+      <div class="flex flex-col md:flex-row gap-4">
+        <div class="flex-1">
+          <div class="relative">
+            <i
+              data-lucide="search"
+              class="w-5 h-5 absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400"
+            ></i>
+            <input
+              type="text"
+              id="searchInput"
+              placeholder="Search by name, student ID, email..."
+              class="w-full pl-10 pr-4 py-3 border-2 border-gray-200 rounded-xl focus:border-primary-green focus:ring-2 focus:ring-primary-green/20 outline-none transition-all duration-200"
+            />
+          </div>
+        </div>
+        <div class="flex gap-3">
+          <select
+            id="sectionFilter"
+            class="px-4 py-3 border-2 border-gray-200 rounded-xl focus:border-primary-green outline-none"
+          >
+            <option value="">All Programs</option>
+            <option value="Grade 7-A">Grade 7-A</option>
+            <option value="Grade 7-B">Grade 7-B</option>
+            <option value="Grade 8-A">Grade 8-A</option>
+            <option value="Grade 8-B">Grade 8-B</option>
+            <option value="Grade 9-A">Grade 9-A</option>
+            <option value="Grade 9-B">Grade 9-B</option>
+            <option value="Grade 10-A">Grade 10-A</option>
+            <option value="Grade 10-B">Grade 10-B</option>
+            <option value="Grade 11-STEM">Grade 11-STEM</option>
+            <option value="Grade 11-ABM">Grade 11-ABM</option>
+            <option value="Grade 11-HUMSS">Grade 11-HUMSS</option>
+            <option value="Grade 12-STEM">Grade 12-STEM</option>
+            <option value="Grade 12-ABM">Grade 12-ABM</option>
+            <option value="Grade 12-HUMSS">Grade 12-HUMSS</option>
+          </select>
+          <input
+            id="tertiaryProgramFilter"
+            type="text"
+            placeholder="Filter tertiary program..."
+            class="px-4 py-3 border-2 border-gray-200 rounded-xl focus:border-primary-green outline-none hidden"
+          />
+          <select
+            id="yearLevelFilter"
+            class="px-4 py-3 border-2 border-gray-200 rounded-xl focus:border-primary-green outline-none"
+          >
+            <option value="">All Year Levels</option>
+            <option value="Grade 1">Grade 1</option>
+            <option value="Grade 2">Grade 2</option>
+            <option value="Grade 3">Grade 3</option>
+            <option value="Grade 4">Grade 4</option>
+            <option value="Grade 5">Grade 5</option>
+            <option value="Grade 6">Grade 6</option>
+            <option value="Grade 7">Grade 7</option>
+            <option value="Grade 8">Grade 8</option>
+            <option value="Grade 9">Grade 9</option>
+            <option value="Grade 10">Grade 10</option>
+            <option value="Grade 11">Grade 11</option>
+            <option value="Grade 12">Grade 12</option>
+            <option value="1st Year">1st Year</option>
+            <option value="2nd Year">2nd Year</option>
+            <option value="3rd Year">3rd Year</option>
+            <option value="4th Year">4th Year</option>
+          </select>
+          <select
+            id="educationLevelFilter"
+            class="px-4 py-3 border-2 border-gray-200 rounded-xl focus:border-primary-green outline-none"
+          >
+            <option value="">All Levels</option>
+            <option value="Primary">Primary</option>
+            <option value="Secondary">Secondary</option>
+            <option value="Tertiary">Tertiary</option>
+          </select>
+          <button
+            onclick="clearFilters()"
+            class="px-4 py-3 bg-gray-100 text-gray-700 rounded-xl hover:bg-gray-200 transition-colors font-medium"
+          >
+            <i data-lucide="x" class="w-5 h-5"></i>
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Stats Summary -->
+    <div class="grid grid-cols-1 sm:grid-cols-3 gap-6 mb-8">
+      <div
+        class="bg-gradient-to-br from-primary-green to-emerald-600 rounded-xl p-6 shadow-lg text-white animate-scale-in"
+        style="animation-delay: 0.1s"
+      >
+        <div class="flex items-center justify-between mb-3">
+          <i data-lucide="users" class="w-8 h-8"></i>
+          <span class="text-2xl font-bold">{{ students|length }}</span>
+        </div>
+        <p class="text-sm opacity-90">Total Students</p>
+      </div>
+
+      <div
+        class="bg-gradient-to-br from-secondary-gold to-yellow-600 rounded-xl p-6 shadow-lg text-white animate-scale-in"
+        style="animation-delay: 0.2s"
+      >
+        <div class="flex items-center justify-between mb-3">
+          <i data-lucide="user-check" class="w-8 h-8"></i>
+          <span class="text-2xl font-bold" id="activeCount">0</span>
+        </div>
+        <p class="text-sm opacity-90">Active This Term</p>
+      </div>
+
+      <div
+        class="bg-gradient-to-br from-blue-500 to-indigo-600 rounded-xl p-6 shadow-lg text-white animate-scale-in"
+        style="animation-delay: 0.3s"
+      >
+        <div class="flex items-center justify-between mb-3">
+          <i data-lucide="layers" class="w-8 h-8"></i>
+          <span class="text-2xl font-bold" id="sectionCount">0</span>
+        </div>
+        <p class="text-sm opacity-90">Sections</p>
+      </div>
+    </div>
+
+    <!-- Students Table -->
+    <div
+      class="bg-white rounded-xl shadow-lg overflow-hidden animate-slide-up"
+      style="animation-delay: 0.1s"
+    >
+      <div class="overflow-x-auto">
+        {% if students %}
+        <table class="w-full" id="studentsTable">
+          <thead
+            class="bg-gradient-to-r from-gray-50 to-gray-100 sticky-header"
+          >
+            <tr>
+              <th
+                class="px-6 py-4 text-left text-xs font-bold text-text-muted uppercase tracking-wider"
+              >
+                Student ID
+              </th>
+              <th
+                class="px-6 py-4 text-left text-xs font-bold text-text-muted uppercase tracking-wider"
+              >
+                Name
+              </th>
+              <th
+                class="px-6 py-4 text-left text-xs font-bold text-text-muted uppercase tracking-wider"
+              >
+                Email
+              </th>
+              <th
+                class="px-6 py-4 text-left text-xs font-bold text-text-muted uppercase tracking-wider"
+              >
+                Program
+              </th>
+              <th
+                class="px-6 py-4 text-left text-xs font-bold text-text-muted uppercase tracking-wider"
+              >
+                Year Level
+              </th>
+              <th
+                class="px-6 py-4 text-left text-xs font-bold text-text-muted uppercase tracking-wider"
+              >
+                Education Level
+              </th>
+              <th
+                class="px-6 py-4 text-left text-xs font-bold text-text-muted uppercase tracking-wider"
+              >
+                Enrolled Date
+              </th>
+              <th
+                class="px-6 py-4 text-center text-xs font-bold text-text-muted uppercase tracking-wider"
+              >
+                Actions
+              </th>
+            </tr>
+          </thead>
+          <tbody class="divide-y divide-gray-200">
+            {% for student in students %}
+            <tr
+              class="hover:bg-gray-50 transition-all duration-200 transform hover:scale-[1.01]"
+            >
+              <td class="px-6 py-4 whitespace-nowrap">
+                <div class="flex items-center">
+                  <div
+                    class="h-10 w-10 rounded-full bg-gradient-to-br from-primary-green to-emerald-600 flex items-center justify-center text-white font-bold mr-3"
+                  >
+                    {{ student.first_name[0] }}{{ student.last_name[0] }}
+                  </div>
+                  <span class="text-sm font-semibold text-text-dark"
+                    >{{ student.student_id }}</span
+                  >
+                </div>
+              </td>
+              <td class="px-6 py-4 whitespace-nowrap">
+                <div class="text-sm font-medium text-text-dark">
+                  {{ student.first_name }} {{ student.last_name }}
+                </div>
+              </td>
+              <td class="px-6 py-4 whitespace-nowrap">
+                <div class="text-sm text-text-muted flex items-center gap-2">
+                  <i data-lucide="mail" class="w-4 h-4"></i>
+                  {{ student.email }}
+                </div>
+              </td>
+              <td class="px-6 py-4 whitespace-nowrap">
+                <span
+                  class="px-3 py-1 text-xs font-semibold text-primary-green bg-green-100 rounded-full"
+                >
+                  {{ student.section }}
+                </span>
+              </td>
+              <td class="px-6 py-4 whitespace-nowrap text-sm text-text-dark">
+                {{ student.year_level }}
+              </td>
+              <td class="px-6 py-4 whitespace-nowrap">
+                <span
+                  class="px-3 py-1 text-xs font-semibold text-blue-700 bg-blue-100 rounded-full"
+                >
+                  {{ student.education_level if student.education_level else
+                  'Secondary' }}
+                </span>
+              </td>
+              <td class="px-6 py-4 whitespace-nowrap text-sm text-text-muted">
+                {{ student.school_year if student.school_year else
+                (student.created_at[:10] if student.created_at else 'N/A') }}
+              </td>
+              <td class="px-6 py-4 whitespace-nowrap text-center">
+                <div class="flex items-center justify-center gap-2">
+                  <button
+                    data-student-id="{{ student.id }}"
+                    class="btn-view-student p-2 text-blue-600 hover:bg-blue-50 rounded-lg transition-all duration-200 transform hover:scale-110"
+                    title="View Details"
+                  >
+                    <i data-lucide="eye" class="w-4 h-4"></i>
+                  </button>
+                  <button
+                    data-student-id="{{ student.id }}"
+                    class="btn-edit-student p-2 text-green-600 hover:bg-green-50 rounded-lg transition-all duration-200 transform hover:scale-110"
+                    title="Edit Student"
+                  >
+                    <i data-lucide="edit" class="w-4 h-4"></i>
+                  </button>
+                  <button
+                    data-student-id="{{ student.id }}"
+                    data-student-name="{{ student.first_name }} {{ student.last_name }}"
+                    class="btn-delete-student p-2 text-red-600 hover:bg-red-50 rounded-lg transition-all duration-200 transform hover:scale-110"
+                    title="Delete Student"
+                  >
+                    <i data-lucide="trash-2" class="w-4 h-4"></i>
+                  </button>
+                </div>
+              </td>
+            </tr>
+            {% endfor %}
+          </tbody>
+        </table>
+        {% else %}
+        <div class="text-center py-16">
+          <i
+            data-lucide="users"
+            class="w-20 h-20 mx-auto mb-4 text-gray-300"
+          ></i>
+          <h3 class="text-xl font-semibold text-text-dark mb-2">
+            No Students Found
+          </h3>
+          <p class="text-text-muted mb-6">
+            Start by adding your first student to the system
+          </p>
+          <a
+            href="{{ url_for('add_student') }}"
+            class="inline-block px-6 py-3 bg-primary-green text-white rounded-xl hover:bg-emerald-700 transition-all duration-200 transform hover:scale-105"
+          >
+            <i data-lucide="user-plus" class="w-5 h-5 inline mr-2"></i>
+            Add First Student
+          </a>
+        </div>
+        {% endif %}
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+  // Filter functionality
+  function filterTable() {
+      const searchTerm = document.getElementById('searchInput').value.toLowerCase();
+      const sectionFilter = document.getElementById('sectionFilter').value;
+      const yearLevelFilter = document.getElementById('yearLevelFilter').value;
+      const educationLevelFilter = document.getElementById('educationLevelFilter').value;
+      const tertiaryProgramFilter = document.getElementById('tertiaryProgramFilter').value.toLowerCase();
+
+      const rows = document.querySelectorAll('#studentsTable tbody tr');
+
+      rows.forEach(row => {
+          const text = row.textContent.toLowerCase();
+          const section = row.cells[3].textContent.trim();
+          const yearLevel = row.cells[4].textContent.trim();
+          const educationLevel = row.cells[5].textContent.trim();
+
+          const matchSearch = text.includes(searchTerm);
+          const matchSection = !sectionFilter || section.includes(sectionFilter);
+          const matchYear = !yearLevelFilter || yearLevel.includes(yearLevelFilter);
+          const matchEducation = !educationLevelFilter || educationLevel.includes(educationLevelFilter);
+          // For tertiary, optionally filter by program (stored in section for tertiary students)
+          const matchTertiaryProgram = !tertiaryProgramFilter || (educationLevel === 'Tertiary' && section.toLowerCase().includes(tertiaryProgramFilter));
+
+          row.style.display = (matchSearch && matchSection && matchYear && matchEducation && matchTertiaryProgram) ? '' : 'none';
+      });
+  }
+
+    // Attach event listeners
+    document.getElementById('searchInput').addEventListener('input', filterTable);
+    document.getElementById('sectionFilter').addEventListener('change', filterTable);
+    document.getElementById('yearLevelFilter').addEventListener('change', filterTable);
+    document.getElementById('educationLevelFilter').addEventListener('change', function(){
+      const val = this.value;
+      const tertiaryInput = document.getElementById('tertiaryProgramFilter');
+      const sectionSelect = document.getElementById('sectionFilter');
+      const yearSelect = document.getElementById('yearLevelFilter');
+
+      // Reset section and year filters when education level changes
+      sectionSelect.value = '';
+      yearSelect.value = '';
+      tertiaryInput.value = '';
+
+      // Populate yearLevel and section options depending on education level
+      function setOptions(selectEl, options) {
+      selectEl.innerHTML = '';
+      const empty = document.createElement('option'); empty.value = ''; empty.textContent = 'All'; selectEl.appendChild(empty);
+      options.forEach(opt => { const o = document.createElement('option'); o.value = opt; o.textContent = opt; selectEl.appendChild(o); });
+      }
+
+      if (val === 'Tertiary') {
+        // Tertiary: show tertiary program input, hide section select
+        tertiaryInput.classList.remove('hidden');
+        sectionSelect.classList.add('hidden');
+        yearSelect.classList.remove('hidden');
+        setOptions(yearSelect, ['1st Year','2nd Year','3rd Year','4th Year','Graduate']);
+      } else if (val === 'Primary') {
+        tertiaryInput.classList.add('hidden');
+        sectionSelect.classList.remove('hidden');
+        yearSelect.classList.remove('hidden');
+        setOptions(yearSelect, ['Grade 1','Grade 2','Grade 3','Grade 4','Grade 5','Grade 6']);
+        setOptions(sectionSelect, ['Grade 1-A','Grade 1-B','Grade 2-A','Grade 2-B','Grade 3-A','Grade 3-B','Grade 4-A','Grade 4-B','Grade 5-A','Grade 5-B','Grade 6-A','Grade 6-B']);
+      } else if (val === 'Secondary') {
+        tertiaryInput.classList.add('hidden');
+        sectionSelect.classList.remove('hidden');
+        yearSelect.classList.remove('hidden');
+        // Show Grades 7-12 (including Senior High years)
+        setOptions(yearSelect, ['Grade 7','Grade 8','Grade 9','Grade 10','Grade 11','Grade 12']);
+        setOptions(sectionSelect, ['Grade 7-A','Grade 7-B','Grade 8-A','Grade 8-B','Grade 9-A','Grade 9-B','Grade 10-A','Grade 10-B','Grade 11-STEM','Grade 11-ABM','Grade 11-HUMSS','Grade 11-TVL','Grade 12-STEM','Grade 12-ABM','Grade 12-HUMSS','Grade 12-TVL']);
+      } else {
+        // No filter - show defaults
+        tertiaryInput.classList.add('hidden');
+        sectionSelect.classList.remove('hidden');
+        yearSelect.classList.remove('hidden');
+        setOptions(yearSelect, ['Grade 1','Grade 2','Grade 3','Grade 4','Grade 5','Grade 6','Grade 7','Grade 8','Grade 9','Grade 10','Grade 11','Grade 12','1st Year','2nd Year','3rd Year','4th Year']);
+      }
+
+      filterTable();
+    });
+    document.getElementById('tertiaryProgramFilter').addEventListener('input', filterTable);
+
+  // Clear filters
+  function clearFilters() {
+      document.getElementById('searchInput').value = '';
+      document.getElementById('sectionFilter').value = '';
+      document.getElementById('yearLevelFilter').value = '';
+      document.getElementById('educationLevelFilter').value = '';
+      filterTable();
+  }
+
+  // Calculate stats
+  const students = {{ students|tojson }};
+  document.getElementById('activeCount').textContent = students.length;
+  const sections = new Set(students.map(s => s.section));
+  document.getElementById('sectionCount').textContent = sections.size;
+
+  // Action buttons (attach handlers to data-* buttons)
+  document.addEventListener('DOMContentLoaded', function(){
+    // View
+    document.querySelectorAll('.btn-view-student').forEach(btn => {
+      btn.addEventListener('click', function(){
+        const id = this.dataset.studentId;
+        window.location.href = `/students/view/${id}`;
+      });
+    });
+
+    // Edit
+    document.querySelectorAll('.btn-edit-student').forEach(btn => {
+      btn.addEventListener('click', function(){
+        const id = this.dataset.studentId;
+        window.location.href = `/students/edit/${id}`;
+      });
+    });
+
+    // Delete
+    document.querySelectorAll('.btn-delete-student').forEach(btn => {
+      btn.addEventListener('click', function(){
+        const id = this.dataset.studentId;
+        const name = this.dataset.studentName;
+        if (!confirm(`Are you sure you want to delete ${name}?`)) return;
+        fetch(`/students/delete/${id}`, { method: 'POST' })
+          .then(r => { if (r.status === 204 || r.ok) location.reload(); else alert('Failed to delete'); })
+          .catch(() => alert('Error deleting student'));
+      });
+    });
+  });
+</script>
+{% endblock %}

@@ -1,0 +1,62 @@
+{% extends "base.html" %}
+
+{% block title %}Edit Student - Student Grading System{% endblock %}
+
+{% block content %}
+<div class="p-7">
+  <div class="max-w-3xl mx-auto">
+    <a href="{{ url_for('students') }}" class="inline-flex items-center text-primary-green hover:text-emerald-700 transition-colors mb-4">
+      <i data-lucide="arrow-left" class="w-5 h-5 mr-2"></i>
+      Back to Students
+    </a>
+
+    <div class="bg-white rounded-xl shadow-lg p-6">
+      <h2 class="text-2xl font-bold mb-4">Edit Student</h2>
+
+      <form method="POST" action="{{ url_for('edit_student', student_id=student.id) }}" class="grid grid-cols-1 gap-4">
+        <div>
+          <label class="text-sm font-medium">Student ID</label>
+          <input type="text" name="student_id" value="{{ student.student_id }}" required class="w-full px-3 py-2 border rounded-lg" />
+        </div>
+        <div>
+          <label class="text-sm font-medium">First Name</label>
+          <input type="text" name="first_name" value="{{ student.first_name }}" required class="w-full px-3 py-2 border rounded-lg" />
+        </div>
+        <div>
+          <label class="text-sm font-medium">Last Name</label>
+          <input type="text" name="last_name" value="{{ student.last_name }}" required class="w-full px-3 py-2 border rounded-lg" />
+        </div>
+        <div>
+          <label class="text-sm font-medium">Email</label>
+          <input type="email" name="email" value="{{ student.email }}" required class="w-full px-3 py-2 border rounded-lg" />
+        </div>
+        <div>
+          <label class="text-sm font-medium">Program</label>
+          <input type="text" name="section" value="{{ student.section }}" required class="w-full px-3 py-2 border rounded-lg" />
+        </div>
+        <div>
+          <label class="text-sm font-medium">Year Level</label>
+          <input type="text" name="year_level" value="{{ student.year_level }}" required class="w-full px-3 py-2 border rounded-lg" />
+        </div>
+        <div>
+          <label class="text-sm font-medium">Education Level</label>
+          <select name="education_level" class="w-full px-3 py-2 border rounded-lg">
+            <option value="Primary" {% if student.education_level == 'Primary' %}selected{% endif %}>Primary</option>
+            <option value="Secondary" {% if student.education_level == 'Secondary' %}selected{% endif %}>Secondary</option>
+            <option value="Tertiary" {% if student.education_level == 'Tertiary' %}selected{% endif %}>Tertiary</option>
+          </select>
+        </div>
+        <div>
+          <label class="text-sm font-medium">School Year</label>
+          <input type="text" name="school_year" value="{{ student.school_year }}" class="w-full px-3 py-2 border rounded-lg" />
+        </div>
+
+        <div class="mt-4 flex gap-3">
+          <button type="submit" class="px-4 py-2 bg-primary-green text-white rounded-lg">Save Changes</button>
+          <a href="{{ url_for('students') }}" class="px-4 py-2 bg-gray-100 rounded-lg">Cancel</a>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>
+{% endblock %}

@@ -1,0 +1,259 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>{% block title %}Student Grading System{% endblock %}</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link
+      rel="stylesheet"
+      href="{{ url_for('static', filename='styles.css') }}"
+    />
+    <script src="https://unpkg.com/lucide@latest"></script>
+
+    <script>
+      tailwind.config = {
+        theme: {
+          extend: {
+            colors: {
+              "primary-green": "#1f8f4a",
+              "secondary-gold": "#d4b35a",
+              "accent-blue": "#3b82f6",
+              "accent-red": "#ef4444",
+              "accent-yellow": "#facc15",
+              "accent-purple": "#a78bfa",
+              "bg-light": "#eef8f1",
+              "bg-lighter": "#f6faf6",
+              "bg-accent": "#f0f4ff",
+              "text-dark": "#12202b",
+              "text-muted": "#6b7280",
+              "border-light": "#e6eef0",
+            },
+            animation: {
+              "fade-in": "fadeIn 0.5s ease-in",
+              "slide-up": "slideUp 0.4s ease-out",
+              "slide-down": "slideDown 0.3s ease-out",
+              "scale-in": "scaleIn 0.3s ease-out",
+            },
+            keyframes: {
+              fadeIn: {
+                "0%": { opacity: "0" },
+                "100%": { opacity: "1" },
+              },
+              slideUp: {
+                "0%": { transform: "translateY(20px)", opacity: "0" },
+                "100%": { transform: "translateY(0)", opacity: "1" },
+              },
+              slideDown: {
+                "0%": { transform: "translateY(-10px)", opacity: "0" },
+                "100%": { transform: "translateY(0)", opacity: "1" },
+              },
+              scaleIn: {
+                "0%": { transform: "scale(0.9)", opacity: "0" },
+                "100%": { transform: "scale(1)", opacity: "1" },
+              },
+            },
+          },
+        },
+      };
+    </script>
+  </head>
+  <body class="font-sans antialiased bg-bg-accent min-h-screen">
+    <!-- Navigation (public + authenticated) -->
+    <nav class="bg-white shadow-md sticky top-0 z-50 animate-slide-down">
+      <div class="max-w-[1400px] mx-auto px-6 py-4">
+        <div class="flex items-center justify-between">
+          <div class="flex items-center gap-4">
+            <div
+              class="h-12 w-12 rounded-xl bg-gradient-to-br from-primary-green to-secondary-gold grid place-items-center text-white shadow-lg transform hover:scale-110 transition-transform duration-300"
+            >
+              <span class="text-lg font-extrabold">GS</span>
+            </div>
+            <div>
+              <h1 class="text-lg font-bold text-text-dark">Grading System</h1>
+              <p class="text-xs text-text-muted">Student Management Portal</p>
+            </div>
+          </div>
+
+          <div class="hidden md:flex items-center gap-6">
+            {% if session.user_id %}
+            <a
+              href="{{ url_for('dashboard') }}"
+              class="nav-link text-sm font-medium text-text-muted hover:text-primary-green transition-colors duration-200"
+              ><i data-lucide="layout-dashboard" class="w-4 h-4 inline mr-1"></i
+              >Dashboard</a
+            >
+            <a
+              href="{{ url_for('students') }}"
+              class="nav-link text-sm font-medium text-text-muted hover:text-primary-green transition-colors duration-200"
+              ><i data-lucide="users" class="w-4 h-4 inline mr-1"></i
+              >Students</a
+            >
+            <a
+              href="{{ url_for('subjects') }}"
+              class="nav-link text-sm font-medium text-text-muted hover:text-primary-green transition-colors duration-200"
+              ><i data-lucide="book-open" class="w-4 h-4 inline mr-1"></i
+              >Subjects</a
+            >
+            <a
+              href="{{ url_for('grades') }}"
+              class="nav-link text-sm font-medium text-text-muted hover:text-primary-green transition-colors duration-200"
+              ><i data-lucide="award" class="w-4 h-4 inline mr-1"></i>Grades</a
+            >
+            {% endif %}
+          </div>
+
+          <div class="flex items-center gap-3 relative">
+            <!-- Moved Home/About here so they sit beside Login/SignUp -->
+            <div class="hidden sm:flex items-center mr-3 gap-3">
+              <a
+                href="{{ url_for('index') }}"
+                class="text-sm font-medium text-text-muted hover:text-primary-green transition-colors duration-200"
+                >Home</a
+              >
+              <a
+                href="{{ url_for('about') }}"
+                class="text-sm font-medium text-text-muted hover:text-primary-green transition-colors duration-200"
+                >About</a
+              >
+            </div>
+            {% if session.user_id %}
+            <div class="hidden sm:flex items-center text-right mr-3">
+              <div class="mr-3">
+                <p class="text-sm font-medium text-text-dark">
+                  {{ session.username }}
+                </p>
+                <p class="text-xs text-text-muted capitalize">
+                  {{ session.role }}
+                </p>
+              </div>
+            </div>
+            <div class="relative">
+              <button
+                id="profileButton"
+                class="flex items-center gap-2 px-3 py-1 rounded-lg hover:bg-gray-100 transition"
+                aria-expanded="false"
+              >
+                <div
+                  class="h-9 w-9 rounded-full bg-gradient-to-br from-primary-green to-emerald-600 flex items-center justify-center text-white font-bold"
+                >
+                  {{ session.username[0] if session.username else '' }}
+                </div>
+                <i
+                  data-lucide="chevron-down"
+                  class="w-4 h-4 text-text-muted"
+                ></i>
+              </button>
+              <div
+                id="profileDropdown"
+                class="hidden absolute right-0 mt-2 w-44 bg-white rounded-lg shadow-lg border divide-y"
+                style="z-index: 60"
+              >
+                <div class="p-3">
+                  <div class="font-semibold">{{ session.username }}</div>
+                  <div class="text-xs text-text-muted">
+                    Level: {{ session.education_level if session.education_level
+                    else 'N/A' }}
+                  </div>
+                </div>
+                <div class="p-2">
+                  <a
+                    href="{{ url_for('profile') }}"
+                    class="block px-3 py-2 rounded hover:bg-gray-100"
+                    >View Profile</a
+                  >
+                  <a
+                    href="{{ url_for('edit_profile') }}"
+                    class="block px-3 py-2 rounded hover:bg-gray-100"
+                    >Edit Profile</a
+                  >
+                  <a
+                    href="{{ url_for('logout') }}"
+                    class="block px-3 py-2 rounded text-red-600 hover:bg-gray-100"
+                    >Logout</a
+                  >
+                </div>
+              </div>
+            </div>
+            {% else %}
+            <div class="hidden sm:flex items-center text-right mr-3">
+              <a
+                href="{{ url_for('login') }}"
+                class="px-3 py-2 text-sm font-medium text-primary-green border border-primary-green rounded-md hover:bg-primary-green/10"
+                >Login</a
+              >
+              <a
+                href="{{ url_for('signup') }}"
+                class="ml-3 px-3 py-2 text-sm font-medium bg-primary-green text-white rounded-md hover:bg-emerald-700"
+                >Sign Up</a
+              >
+            </div>
+            {% endif %}
+          </div>
+        </div>
+      </div>
+    </nav>
+
+    <!-- Flash Messages -->
+    {% with messages = get_flashed_messages(with_categories=true) %} {% if
+    messages %}
+    <div
+      class="max-w-[1400px] mx-auto px-6 pt-4"
+      role="status"
+      aria-live="polite"
+    >
+      {% for category, message in messages %}
+      <div
+        role="alert"
+        class="alert-{{ category }} bg-{{ 'green' if category == 'success' else 'blue' if category == 'info' else 'yellow' if category == 'warning' else 'red' }}-100 border border-{{ 'green' if category == 'success' else 'blue' if category == 'info' else 'yellow' if category == 'warning' else 'red' }}-400 text-{{ 'green' if category == 'success' else 'blue' if category == 'info' else 'yellow' if category == 'warning' else 'red' }}-700 px-4 py-3 rounded-lg mb-4 animate-slide-down"
+      >
+        {{ message }}
+      </div>
+      {% endfor %}
+    </div>
+    {% endif %} {% endwith %}
+
+    <!-- Main Content -->
+    <main class="min-h-screen" role="main">
+      {% block content %}{% endblock %}
+    </main>
+
+    <!-- Footer -->
+    <footer class="bg-white border-t border-gray-200 mt-12">
+      <div
+        class="max-w-[1400px] mx-auto px-6 py-6 text-center text-text-muted text-sm"
+      >
+        <p>&copy; 2024 Student Grading System. All rights reserved.</p>
+      </div>
+    </footer>
+
+    <script>
+      document.addEventListener("DOMContentLoaded", () => {
+        lucide.createIcons();
+
+        // Auto-hide alerts after 5 seconds
+        setTimeout(() => {
+          const alerts = document.querySelectorAll('[class*="alert-"]');
+          alerts.forEach((alert) => {
+            alert.style.transition = "opacity 0.5s ease-out";
+            alert.style.opacity = "0";
+            setTimeout(() => alert.remove(), 500);
+          });
+        }, 5000);
+      });
+      // Profile dropdown toggle
+      document.addEventListener("click", function (e) {
+        const btn = document.getElementById("profileButton");
+        const dd = document.getElementById("profileDropdown");
+        if (!btn || !dd) return;
+        if (btn.contains(e.target)) {
+          const visible = !dd.classList.contains("hidden");
+          if (visible) dd.classList.add("hidden");
+          else dd.classList.remove("hidden");
+        } else if (!dd.contains(e.target)) {
+          dd.classList.add("hidden");
+        }
+      });
+    </script>
+  </body>
+</html>

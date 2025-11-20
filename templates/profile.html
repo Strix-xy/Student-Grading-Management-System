@@ -1,0 +1,63 @@
+{% extends "base.html" %} {% block title %}Profile - Student Grading System{%
+endblock %} {% block content %}
+<div class="py-12 px-4">
+  <div class="max-w-5xl mx-auto">
+    <a
+      href="{{ url_for('dashboard') }}"
+      class="inline-flex items-center text-primary-green hover:text-emerald-700 transition-colors mb-4"
+    >
+      <i data-lucide="arrow-left" class="w-5 h-5 mr-2"></i>
+      Back to Dashboard
+    </a>
+
+    <div class="bg-white rounded-2xl shadow-2xl p-10">
+      <div class="flex flex-col md:flex-row items-start gap-8">
+        <div
+          class="h-32 w-32 rounded-full bg-gradient-to-br from-primary-green to-emerald-600 flex items-center justify-center text-white font-bold text-5xl shadow-lg"
+        >
+          {{ user.username[0] if user.username else '' }}
+        </div>
+        <div class="flex-1">
+          <h2 class="text-4xl font-bold text-text-dark mb-2">
+            {{ user.username }}
+          </h2>
+          <div class="grid grid-cols-1 md:grid-cols-2 gap-x-12 gap-y-4 text-lg">
+            <div>
+              <span class="font-semibold text-text-dark">Email:</span>
+              <span class="ml-2 text-text-muted">{{ user.email }}</span>
+            </div>
+            <div>
+              <span class="font-semibold text-text-dark">Role:</span>
+              <span class="ml-2 text-text-muted">{{ user.role }}</span>
+            </div>
+            <div>
+              <span class="font-semibold text-text-dark">Education Level:</span>
+              <span class="ml-2 text-text-muted"
+                >{{ user.education_level }}</span
+              >
+            </div>
+            <div>
+              <span class="font-semibold text-text-dark">Joined:</span>
+              <span class="ml-2 text-text-muted"
+                >{{ user.created_at[:10] if user.created_at else 'N/A' }}</span
+              >
+            </div>
+          </div>
+          <div class="mt-8 flex gap-4">
+            <a
+              href="{{ url_for('edit_profile') }}"
+              class="px-5 py-2 bg-primary-green text-white rounded-lg text-lg font-semibold shadow hover:bg-emerald-700 transition"
+              >Edit Profile</a
+            >
+            <a
+              href="{{ url_for('logout') }}"
+              class="px-5 py-2 bg-red-600 text-white rounded-lg text-lg font-semibold shadow hover:bg-red-700 transition"
+              >Logout</a
+            >
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock %}

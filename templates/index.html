@@ -1,0 +1,194 @@
+{% extends "base.html" %} {% block content %}
+<div class="relative overflow-hidden">
+  <!-- Hero Section -->
+  <section
+    class="relative min-h-screen flex items-center justify-center px-6 py-20"
+  >
+    <!-- Animated Background -->
+    <div class="absolute inset-0 -z-10">
+      <div
+        class="absolute top-20 left-20 w-72 h-72 bg-primary-green/10 rounded-full blur-3xl animate-pulse"
+      ></div>
+      <div
+        class="absolute bottom-20 right-20 w-96 h-96 bg-secondary-gold/10 rounded-full blur-3xl animate-pulse delay-700"
+      ></div>
+    </div>
+
+    <div class="max-w-6xl mx-auto animate-fade-in">
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-10 items-center">
+        <div class="text-center md:text-left">
+          <div class="mb-6 inline-block animate-scale-in">
+            <div class="h-20 w-20 rounded-2xl bg-gradient-to-br from-primary-green to-secondary-gold grid place-items-center text-white shadow-2xl transform hover:rotate-6 transition-transform duration-300 mx-auto md:mx-0">
+              <span class="text-3xl font-extrabold">GS</span>
+            </div>
+          </div>
+
+          <h1 class="text-4xl md:text-6xl font-extrabold text-text-dark mb-4">
+            Student Grading
+            <span class="bg-gradient-to-r from-primary-green to-secondary-gold bg-clip-text text-transparent">System</span>
+          </h1>
+
+          <p class="text-lg md:text-xl text-text-muted mb-6 max-w-xl">
+            Simplify grading and reporting so teachers can focus on teaching. Manage students, subjects, and grades with confidence — fast, secure, and designed for schools.
+          </p>
+
+          <ul class="mb-6 grid grid-cols-1 sm:grid-cols-2 gap-2 max-w-md mx-auto md:mx-0 text-sm text-text-muted">
+            <li class="flex items-center gap-2"><i data-lucide="check-circle" class="w-4 h-4 text-primary-green"></i> Auto grade calculations</li>
+            <li class="flex items-center gap-2"><i data-lucide="users" class="w-4 h-4 text-secondary-gold"></i> Student-level profiles</li>
+            <li class="flex items-center gap-2"><i data-lucide="file-text" class="w-4 h-4 text-accent-blue"></i> Exportable reports</li>
+            <li class="flex items-center gap-2"><i data-lucide="shield" class="w-4 h-4 text-accent-purple"></i> Secure per-teacher data</li>
+          </ul>
+
+          <div class="flex flex-col sm:flex-row gap-4 justify-center md:justify-start">
+            <a href="{{ url_for('signup') }}" aria-label="Create account" class="px-6 py-3 bg-primary-green text-white rounded-lg font-semibold shadow hover:bg-emerald-700 transition btn-primary">Get Started — Free</a>
+            <a href="{{ url_for('login') }}" aria-label="Sign in" class="px-6 py-3 border-2 border-primary-green text-primary-green rounded-lg font-semibold hover:bg-primary-green/10 transition btn-outline">Sign In</a>
+            <a href="{{ url_for('about') }}" aria-label="Learn more" class="px-6 py-3 bg-secondary-gold text-white rounded-lg font-semibold hover:brightness-95 transition">Learn More</a>
+          </div>
+        </div>
+
+        <div class="flex items-center justify-center">
+          <div class="w-full max-w-md lg:max-w-xl flex flex-col lg:flex-row items-center gap-6">
+            <img src="{{ url_for('static', filename='images/hero.svg') }}" alt="School illustration" class="w-full lg:w-64 rounded-md shadow-md hidden md:block">
+            <!-- Decorative card with stats -->
+            <div class="w-full bg-white rounded-2xl shadow-2xl p-6 border-2 border-border-light">
+            <div class="flex items-center justify-between mb-4">
+              <div>
+                <h4 class="text-lg font-semibold text-text-dark">Trusted in classrooms</h4>
+                <p class="text-sm text-text-muted">Used by teachers and schools for streamlined grading</p>
+              </div>
+              <div class="text-right">
+                <div class="text-2xl font-extrabold text-primary-green">98%</div>
+                <div class="text-xs text-text-muted">uptime & reliability</div>
+              </div>
+            </div>
+
+            <div class="grid grid-cols-2 gap-4 mt-4">
+              <div class="p-3 rounded-lg bg-bg-lighter text-center">
+                <div class="text-lg font-bold text-text-dark">Students</div>
+                <div class="text-sm text-text-muted">Manage profiles</div>
+              </div>
+              <div class="p-3 rounded-lg bg-bg-lighter text-center">
+                <div class="text-lg font-bold text-text-dark">Grades</div>
+                <div class="text-sm text-text-muted">Auto calculations</div>
+              </div>
+            </div>
+
+            <div class="mt-6 text-sm text-text-muted">Designed for Primary • Secondary • Tertiary</div>
+          </div>
+        </div>
+      </div>
+    </div>
+    
+    <!-- Replace feature icons with local SVGs -->
+  </section>
+
+  <!-- Features Section -->
+  <section class="py-20 px-6 bg-white">
+    <div class="max-w-6xl mx-auto">
+      <div class="text-center mb-16 animate-fade-in">
+        <h2 class="text-4xl font-bold text-text-dark mb-4">
+          Powerful Features
+        </h2>
+        <p class="text-lg text-text-muted">
+          Everything you need to manage academic performance
+        </p>
+      </div>
+
+      <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+        <!-- Feature 1 -->
+        <div class="group p-8 bg-gradient-to-br from-bg-lighter to-white rounded-2xl shadow-lg hover:shadow-2xl transform hover:-translate-y-2 transition-all duration-300 animate-slide-up" style="animation-delay: 0.1s">
+          <img src="{{ url_for('static', filename='images/feature-students.svg') }}" alt="students" class="w-20 h-20 mx-auto mb-4">
+          <h3 class="text-xl font-bold text-text-dark mb-3">Student Management</h3>
+          <p class="text-text-muted">Easily add, edit, and manage student records with comprehensive profile information.</p>
+        </div>
+
+        <!-- Feature 2 -->
+        <div class="group p-8 bg-gradient-to-br from-bg-lighter to-white rounded-2xl shadow-lg hover:shadow-2xl transform hover:-translate-y-2 transition-all duration-300 animate-slide-up" style="animation-delay: 0.2s">
+          <img src="{{ url_for('static', filename='images/feature-grades.svg') }}" alt="grades" class="w-20 h-20 mx-auto mb-4">
+          <h3 class="text-xl font-bold text-text-dark mb-3">Grade Tracking</h3>
+          <p class="text-text-muted">Record and monitor prelim, midterm, and final grades with automatic calculations.</p>
+        </div>
+
+        <!-- Feature 3 -->
+        <div class="group p-8 bg-gradient-to-br from-bg-lighter to-white rounded-2xl shadow-lg hover:shadow-2xl transform hover:-translate-y-2 transition-all duration-300 animate-slide-up" style="animation-delay: 0.3s">
+          <img src="{{ url_for('static', filename='images/feature-analytics.svg') }}" alt="analytics" class="w-20 h-20 mx-auto mb-4">
+          <h3 class="text-xl font-bold text-text-dark mb-3">Analytics & Reports</h3>
+          <p class="text-text-muted">Generate detailed reports and visualize student performance trends.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+  </section>
+
+  <!-- Testimonials Section -->
+  <section class="py-12 px-6">
+    <div class="max-w-6xl mx-auto text-center">
+      <h3 class="text-2xl font-bold text-text-dark mb-6">What educators say</h3>
+      <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+        <div class="p-6 bg-white rounded-2xl shadow hover:shadow-lg">
+          <p class="text-text-muted mb-4">“This system cut my grading time in half. The reports are clear and easy to share with parents.”</p>
+          <div class="text-sm font-semibold text-text-dark">— Maria Lopez, Grade 6 Teacher</div>
+        </div>
+        <div class="p-6 bg-white rounded-2xl shadow hover:shadow-lg">
+          <p class="text-text-muted mb-4">“I love how I can keep subjects and students organized by level. Switching terms is effortless.”</p>
+          <div class="text-sm font-semibold text-text-dark">— Kelvin Tan, High School Instructor</div>
+        </div>
+        <div class="p-6 bg-white rounded-2xl shadow hover:shadow-lg">
+          <p class="text-text-muted mb-4">“Secure and intuitive — perfect for our school's needs. The per-teacher scoping is especially helpful.”</p>
+          <div class="text-sm font-semibold text-text-dark">— Dr. Aisha Rahman, School Admin</div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- CTA Section -->
+  <section
+    class="py-20 px-6 bg-gradient-to-br from-primary-green to-emerald-700 text-white"
+  >
+    <div class="max-w-4xl mx-auto text-center animate-fade-in">
+      <h2 class="text-4xl md:text-5xl font-bold mb-6">Ready to Get Started?</h2>
+      <p class="text-xl mb-10 opacity-90">
+        Join thousands of educators managing grades efficiently
+      </p>
+          <a href="{{ url_for('signup') }}" aria-label="Start free today" class="inline-block px-10 py-4 bg-white text-primary-green text-lg font-semibold rounded-xl shadow-2xl hover:shadow-3xl transform hover:-translate-y-1 hover:scale-105 transition-all duration-300 btn-outline">
+            <i data-lucide="rocket" class="w-5 h-5 inline mr-2"></i>
+            Start Free Today
+          </a>
+    </div>
+  </section>
+  
+  <!-- Footer -->
+  <footer class="mt-10 bg-white py-8 border-t border-border-light">
+    <div class="max-w-6xl mx-auto px-6 grid grid-cols-1 md:grid-cols-2 gap-6 items-center">
+      <div>
+        <div class="h-10 w-10 rounded-md bg-gradient-to-br from-primary-green to-secondary-gold grid place-items-center text-white font-bold">GS</div>
+        <p class="text-sm text-text-muted mt-2">Student Grading System — built for educators.</p>
+      </div>
+
+      <div class="text-right text-sm text-text-muted">
+        © {{ config.get('APP_YEAR', '2025') }} Student Grading System
+      </div>
+    </div>
+  </footer>
+</div>
+
+<style>
+  @keyframes pulse {
+    0%,
+    100% {
+      opacity: 0.6;
+      transform: scale(1);
+    }
+    50% {
+      opacity: 0.8;
+      transform: scale(1.1);
+    }
+  }
+  .animate-pulse {
+    animation: pulse 4s ease-in-out infinite;
+  }
+  .delay-700 {
+    animation-delay: 700ms;
+  }
+</style>
+{% endblock %}

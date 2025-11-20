@@ -1,0 +1,392 @@
+{% extends "base.html" %} {% block title %}Add Subject - Student Grading
+System{% endblock %} {% block content %}
+<div class="min-h-screen p-7">
+  <div class="max-w-3xl mx-auto">
+    <!-- Header -->
+    <div class="mb-8 animate-slide-down">
+      <a
+        href="{{ url_for('subjects') }}"
+        class="inline-flex items-center text-secondary-gold hover:text-yellow-700 transition-colors mb-4"
+      >
+        <i data-lucide="arrow-left" class="w-5 h-5 mr-2"></i>
+        Back to Subjects
+      </a>
+      <h1 class="text-3xl font-bold text-text-dark mb-2">
+        <i
+          data-lucide="book-plus"
+          class="w-8 h-8 inline mr-2 text-secondary-gold"
+        ></i>
+        Add New Subject
+      </h1>
+      <p class="text-text-muted">
+        Create a new subject or course in the curriculum
+      </p>
+    </div>
+
+    <!-- Form Card -->
+    <div
+      class="bg-white rounded-2xl shadow-2xl overflow-hidden animate-scale-in"
+    >
+      <div class="bg-gradient-to-r from-secondary-gold to-yellow-600 px-8 py-6">
+        <h2 class="text-2xl font-bold text-white">Subject Details</h2>
+        <p class="text-white/90 text-sm mt-1">
+          Fill in the course information below
+        </p>
+      </div>
+
+      <form method="POST" action="{{ url_for('add_subject') }}" class="p-8">
+        <!-- Subject Code -->
+        <div class="mb-6 group">
+          <label
+            for="subject_code"
+            class="block text-sm font-semibold text-text-dark mb-2"
+          >
+            <i
+              data-lucide="hash"
+              class="w-4 h-4 inline mr-1 text-secondary-gold"
+            ></i>
+            Subject Code <span class="text-red-500">*</span>
+          </label>
+          <input
+            type="text"
+            id="subject_code"
+            name="subject_code"
+            required
+            class="w-full px-4 py-3 border-2 border-gray-200 rounded-xl focus:border-secondary-gold focus:ring-2 focus:ring-secondary-gold/20 outline-none transition-all duration-200 group-hover:border-gray-300 uppercase"
+            placeholder="e.g., MATH101, ENG201, SCI301"
+            pattern="[A-Z0-9]+"
+            title="Use uppercase letters and numbers only"
+          />
+          <p class="text-xs text-text-muted mt-1">
+            Unique identifier (uppercase letters and numbers)
+          </p>
+        </div>
+
+        <!-- Subject Name -->
+        <div class="mb-6 group">
+          <label
+            for="subject_name"
+            class="block text-sm font-semibold text-text-dark mb-2"
+          >
+            <i
+              data-lucide="book-open"
+              class="w-4 h-4 inline mr-1 text-secondary-gold"
+            ></i>
+            Subject Name <span class="text-red-500">*</span>
+          </label>
+          <input
+            type="text"
+            id="subject_name"
+            name="subject_name"
+            required
+            class="w-full px-4 py-3 border-2 border-gray-200 rounded-xl focus:border-secondary-gold focus:ring-2 focus:ring-secondary-gold/20 outline-none transition-all duration-200 group-hover:border-gray-300"
+            placeholder="e.g., Advanced Mathematics, English Literature"
+          />
+          <p class="text-xs text-text-muted mt-1">Full name of the subject</p>
+        </div>
+
+        <!-- Description -->
+        <div class="mb-6 group">
+          <label
+            for="description"
+            class="block text-sm font-semibold text-text-dark mb-2"
+          >
+            <i
+              data-lucide="align-left"
+              class="w-4 h-4 inline mr-1 text-secondary-gold"
+            ></i>
+            Description
+          </label>
+          <textarea
+            id="description"
+            name="description"
+            rows="4"
+            class="w-full px-4 py-3 border-2 border-gray-200 rounded-xl focus:border-secondary-gold focus:ring-2 focus:ring-secondary-gold/20 outline-none transition-all duration-200 group-hover:border-gray-300 resize-none"
+            placeholder="Enter a brief description of what this subject covers..."
+          ></textarea>
+          <p class="text-xs text-text-muted mt-1">
+            Optional: Brief overview of the course content
+          </p>
+        </div>
+
+        <!-- Units -->
+        <div class="mb-6 group">
+          <label
+            for="units"
+            class="block text-sm font-semibold text-text-dark mb-2"
+          >
+            <i
+              data-lucide="layers"
+              class="w-4 h-4 inline mr-1 text-secondary-gold"
+            ></i>
+            Units / Credit Hours <span class="text-red-500">*</span>
+          </label>
+          <div class="flex items-center gap-4">
+            <input
+              type="number"
+              id="units"
+              name="units"
+              required
+              min="1"
+              max="10"
+              value="3"
+              class="w-32 px-4 py-3 border-2 border-gray-200 rounded-xl focus:border-secondary-gold focus:ring-2 focus:ring-secondary-gold/20 outline-none transition-all duration-200 group-hover:border-gray-300"
+            />
+            <div class="flex gap-2">
+              <button
+                type="button"
+                onclick="changeUnits(-1)"
+                class="px-3 py-2 bg-gray-100 rounded-lg hover:bg-gray-200 transition-colors"
+              >
+                <i data-lucide="minus" class="w-4 h-4"></i>
+              </button>
+              <button
+                type="button"
+                onclick="changeUnits(1)"
+                class="px-3 py-2 bg-gray-100 rounded-lg hover:bg-gray-200 transition-colors"
+              >
+                <i data-lucide="plus" class="w-4 h-4"></i>
+              </button>
+            </div>
+          </div>
+          <p class="text-xs text-text-muted mt-1">
+            Typically 1-6 units per subject
+          </p>
+        </div>
+
+        <!-- Education Level -->
+        <div class="mb-6 group">
+          <label
+            for="education_level"
+            class="block text-sm font-semibold text-text-dark mb-2"
+          >
+            <i
+              data-lucide="book-open"
+              class="w-4 h-4 inline mr-1 text-secondary-gold"
+            ></i>
+            Education Level <span class="text-red-500">*</span>
+          </label>
+          <select
+            id="education_level"
+            name="education_level"
+            required
+            class="w-full px-4 py-3 border-2 border-gray-200 rounded-xl focus:border-secondary-gold focus:ring-2 focus:ring-secondary-gold/20 outline-none transition-all duration-200 group-hover:border-gray-300"
+          >
+            <option value="">Select education level</option>
+            <option value="Primary">Primary</option>
+            <option value="Secondary" selected>Secondary</option>
+            <option value="Tertiary">Tertiary</option>
+          </select>
+          <p class="text-xs text-text-muted mt-1">
+            Select the education level this subject belongs to
+          </p>
+        </div>
+
+        <!-- Academic Year / Class Year -->
+        <div class="mb-6 group">
+          <label
+            for="class_year"
+            class="block text-sm font-semibold text-text-dark mb-2"
+          >
+            <i
+              data-lucide="calendar"
+              class="w-4 h-4 inline mr-1 text-secondary-gold"
+            ></i>
+            Academic Year (optional)
+          </label>
+          <select
+            id="class_year"
+            name="class_year"
+            class="w-full px-4 py-3 border-2 border-gray-200 rounded-xl focus:border-secondary-gold focus:ring-2 focus:ring-secondary-gold/20 outline-none transition-all duration-200 group-hover:border-gray-300"
+          >
+            <option value="">Select academic year</option>
+            {% for y in range(2023, 2031) %}
+            <option value="{{ y }}-{{ y+1 }}">{{ y }}-{{ y+1 }}</option>
+            {% endfor %}
+          </select>
+          <p class="text-xs text-text-muted mt-1">
+            Use academic year format (e.g., 2024-2025)
+          </p>
+        </div>
+
+        <!-- Additional Options -->
+        <div
+          class="mb-8 p-6 bg-gradient-to-br from-gray-50 to-gray-100 rounded-xl border border-gray-200"
+        >
+          <h3 class="font-bold text-text-dark mb-4 flex items-center gap-2">
+            <i data-lucide="settings" class="w-5 h-5 text-secondary-gold"></i>
+            Additional Options
+          </h3>
+          <div class="space-y-3">
+            <label class="flex items-center gap-3 cursor-pointer">
+              <input
+                type="checkbox"
+                class="rounded border-gray-300 text-secondary-gold focus:ring-secondary-gold"
+              />
+              <span class="text-sm text-text-dark">Mark as core subject</span>
+            </label>
+            <label class="flex items-center gap-3 cursor-pointer">
+              <input
+                type="checkbox"
+                class="rounded border-gray-300 text-secondary-gold focus:ring-secondary-gold"
+              />
+              <span class="text-sm text-text-dark"
+                >Enable for online enrollment</span
+              >
+            </label>
+            <label class="flex items-center gap-3 cursor-pointer">
+              <input
+                type="checkbox"
+                class="rounded border-gray-300 text-secondary-gold focus:ring-secondary-gold"
+                checked
+              />
+              <span class="text-sm text-text-dark"
+                >Active for current term</span
+              >
+            </label>
+          </div>
+        </div>
+
+        <!-- Preview Card -->
+        <div
+          class="mb-8 p-6 bg-gradient-to-br from-secondary-gold/5 to-yellow-50 rounded-xl border-2 border-dashed border-secondary-gold/30"
+        >
+          <h3 class="font-bold text-text-dark mb-4 flex items-center gap-2">
+            <i data-lucide="eye" class="w-5 h-5 text-secondary-gold"></i>
+            Preview
+          </h3>
+          <div class="bg-white rounded-lg p-4 shadow-md">
+            <div class="flex items-start gap-3">
+              <div
+                class="h-12 w-12 bg-gradient-to-br from-secondary-gold to-yellow-600 rounded-lg flex items-center justify-center text-white font-bold"
+                id="previewIcon"
+              >
+                --
+              </div>
+              <div class="flex-1">
+                <h4 class="font-bold text-text-dark" id="previewCode">
+                  Subject Code
+                </h4>
+                <p
+                  class="text-sm text-text-dark font-medium mb-2"
+                  id="previewName"
+                >
+                  Subject Name
+                </p>
+                <p class="text-xs text-text-muted" id="previewDesc">
+                  Description will appear here...
+                </p>
+                <div class="mt-3">
+                  <span
+                    class="px-3 py-1 bg-secondary-gold/10 text-secondary-gold rounded-full text-xs font-semibold"
+                    id="previewUnits"
+                    >3 units</span
+                  >
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Action Buttons -->
+        <div class="flex flex-col sm:flex-row gap-4">
+          <button
+            type="submit"
+            class="flex-1 px-6 py-4 bg-gradient-to-r from-secondary-gold to-yellow-600 text-white font-semibold rounded-xl shadow-lg hover:shadow-2xl transform hover:-translate-y-1 transition-all duration-300 flex items-center justify-center gap-2"
+          >
+            <i data-lucide="check" class="w-5 h-5"></i>
+            Create Subject
+          </button>
+          <a
+            href="{{ url_for('subjects') }}"
+            class="flex-1 px-6 py-4 bg-gray-100 text-gray-700 font-semibold rounded-xl hover:bg-gray-200 transition-all duration-200 flex items-center justify-center gap-2"
+          >
+            <i data-lucide="x" class="w-5 h-5"></i>
+            Cancel
+          </a>
+        </div>
+      </form>
+    </div>
+
+    <!-- Info Cards -->
+    <div class="mt-8 grid md:grid-cols-2 gap-4 animate-slide-up">
+      <div class="bg-blue-50 rounded-xl p-4 border-l-4 border-blue-500">
+        <div class="flex items-start gap-3">
+          <i
+            data-lucide="info"
+            class="w-5 h-5 text-blue-600 flex-shrink-0 mt-0.5"
+          ></i>
+          <div>
+            <h4 class="font-semibold text-blue-900 text-sm mb-1">
+              Naming Convention
+            </h4>
+            <p class="text-xs text-blue-800">
+              Use department prefix + number (e.g., MATH101, ENG201)
+            </p>
+          </div>
+        </div>
+      </div>
+
+      <div class="bg-green-50 rounded-xl p-4 border-l-4 border-green-500">
+        <div class="flex items-start gap-3">
+          <i
+            data-lucide="check-circle"
+            class="w-5 h-5 text-green-600 flex-shrink-0 mt-0.5"
+          ></i>
+          <div>
+            <h4 class="font-semibold text-green-900 text-sm mb-1">Quick Tip</h4>
+            <p class="text-xs text-green-800">
+              Add detailed descriptions to help students choose courses
+            </p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+  // Auto-uppercase subject code
+  document
+    .getElementById("subject_code")
+    .addEventListener("input", function (e) {
+      e.target.value = e.target.value.toUpperCase();
+      updatePreview();
+    });
+
+  // Live preview updates
+  document
+    .getElementById("subject_name")
+    .addEventListener("input", updatePreview);
+  document
+    .getElementById("description")
+    .addEventListener("input", updatePreview);
+  document.getElementById("units").addEventListener("input", updatePreview);
+
+  function updatePreview() {
+    const code =
+      document.getElementById("subject_code").value || "Subject Code";
+    const name =
+      document.getElementById("subject_name").value || "Subject Name";
+    const desc =
+      document.getElementById("description").value ||
+      "Description will appear here...";
+    const units = document.getElementById("units").value || "3";
+
+    document.getElementById("previewCode").textContent = code;
+    document.getElementById("previewName").textContent = name;
+    document.getElementById("previewDesc").textContent = desc;
+    document.getElementById("previewUnits").textContent = units + " units";
+    document.getElementById("previewIcon").textContent =
+      code.substring(0, 2) || "--";
+  }
+
+  function changeUnits(delta) {
+    const input = document.getElementById("units");
+    let value = parseInt(input.value) || 3;
+    value = Math.max(1, Math.min(10, value + delta));
+    input.value = value;
+    updatePreview();
+  }
+</script>
+{% endblock %}

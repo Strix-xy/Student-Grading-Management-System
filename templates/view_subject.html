@@ -1,0 +1,74 @@
+{% extends "base.html" %} {% block title %}View Subject - Student Grading
+System{% endblock %} {% block content %}
+<div class="p-7">
+  <div class="max-w-3xl mx-auto">
+    <a
+      href="{{ url_for('subjects') }}"
+      class="inline-flex items-center text-secondary-gold hover:text-yellow-700 transition-colors mb-4"
+    >
+      <i data-lucide="arrow-left" class="w-5 h-5 mr-2"></i>
+      Back to Subjects
+    </a>
+
+    <div class="bg-white rounded-xl shadow-lg p-6">
+      <h2 class="text-2xl font-bold">
+        {{ subject.subject_code }} - {{ subject.subject_name }}
+      </h2>
+      <p class="text-sm text-text-muted">Units: {{ subject.units }}</p>
+      <p class="text-sm text-text-muted">
+        Level: {{ subject.education_level }}
+      </p>
+      <p class="text-sm text-text-muted">
+        Class Year: {{ subject.class_year }}
+      </p>
+
+      <div class="mt-4">
+        <h4 class="font-semibold">Description</h4>
+        <p class="text-sm text-text-muted">
+          {{ subject.description or 'No description provided.' }}
+        </p>
+      </div>
+
+      <div class="mt-6 flex gap-3">
+        <a
+          href="{{ url_for('edit_subject', subject_id=subject.id) }}"
+          class="px-4 py-2 bg-secondary-gold text-white rounded-lg"
+          >Edit</a
+        >
+        <button
+          id="deleteSubjectBtn"
+          data-subject-id="{{ subject.id }}"
+          data-subject-code="{{ subject.subject_code }}"
+          class="px-4 py-2 bg-red-600 text-white rounded-lg"
+        >
+          Delete
+        </button>
+        <a
+          href="{{ url_for('subjects') }}"
+          class="px-4 py-2 bg-gray-100 rounded-lg"
+          >Close</a
+        >
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+  (function () {
+    const btn = document.getElementById("deleteSubjectBtn");
+    if (!btn) return;
+    btn.addEventListener("click", function () {
+      const id = this.dataset.subjectId;
+      const code = this.dataset.subjectCode;
+      if (!confirm(`Delete subject ${code}?`)) return;
+      fetch(`/subjects/delete/${id}`, { method: "POST" })
+        .then((r) => {
+          if (r.status === 204)
+            window.location.href = "{{ url_for('subjects') }}";
+          else alert("Failed to delete");
+        })
+        .catch(() => alert("Network error"));
+    });
+  })();
+</script>
+{% endblock %}

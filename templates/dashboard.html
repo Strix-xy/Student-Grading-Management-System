@@ -1,0 +1,365 @@
+{% extends "base.html" %} {% block title %}Dashboard - Student Grading System{%
+endblock %} {% block content %}
+<div class="p-7">
+  <div class="max-w-[1400px] mx-auto">
+    <!-- Header -->
+    <header class="mb-8 animate-slide-down">
+      <div
+        class="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4"
+      >
+        <div>
+          <h1 class="text-3xl font-bold text-text-dark mb-2">
+            Dashboard Overview
+          </h1>
+          <p class="text-text-muted">
+            Welcome back, {{ session.username }}! Here's your grading system
+            summary.
+          </p>
+        </div>
+        <div class="flex gap-3">
+          <a
+            href="{{ url_for('add_grade') }}"
+            class="px-4 py-2 bg-primary-green text-white rounded-lg"
+          >
+            <i data-lucide="file-plus" class="w-4 h-4 inline mr-1"></i> Add
+            Grade
+          </a>
+        </div>
+      </div>
+    </header>
+
+    <!-- Stats Cards -->
+    <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
+      <!-- Total Students -->
+      <div
+        class="bg-white rounded-xl p-6 shadow-lg hover:shadow-2xl transform hover:-translate-y-1 transition-all duration-300 animate-scale-in border-l-4 border-primary-green"
+        style="animation-delay: 0.1s"
+      >
+        <div class="flex items-center justify-between mb-4">
+          <div
+            class="h-12 w-12 bg-primary-green/10 rounded-xl flex items-center justify-center"
+          >
+            <i data-lucide="users" class="w-6 h-6 text-primary-green"></i>
+          </div>
+          <span
+            class="text-xs text-text-muted bg-green-100 px-2 py-1 rounded-full"
+            >Active</span
+          >
+        </div>
+        <div class="text-3xl font-bold text-text-dark mb-1">
+          {{ total_students }}
+        </div>
+        <div class="text-sm text-text-muted">Total Students</div>
+      </div>
+
+      <!-- Total Subjects -->
+      <div
+        class="bg-white rounded-xl p-6 shadow-lg hover:shadow-2xl transform hover:-translate-y-1 transition-all duration-300 animate-scale-in border-l-4 border-secondary-gold"
+        style="animation-delay: 0.2s"
+      >
+        <div class="flex items-center justify-between mb-4">
+          <div
+            class="h-12 w-12 bg-secondary-gold/10 rounded-xl flex items-center justify-center"
+          >
+            <i data-lucide="book-open" class="w-6 h-6 text-secondary-gold"></i>
+          </div>
+          <span
+            class="text-xs text-text-muted bg-yellow-100 px-2 py-1 rounded-full"
+            >Courses</span
+          >
+        </div>
+        <div class="text-3xl font-bold text-text-dark mb-1">
+          {{ total_subjects }}
+        </div>
+        <div class="text-sm text-text-muted">Total Subjects</div>
+      </div>
+
+      <!-- Total Grades -->
+      <div
+        class="bg-white rounded-xl p-6 shadow-lg hover:shadow-2xl transform hover:-translate-y-1 transition-all duration-300 animate-scale-in border-l-4 border-blue-500"
+        style="animation-delay: 0.3s"
+      >
+        <div class="flex items-center justify-between mb-4">
+          <div
+            class="h-12 w-12 bg-blue-500/10 rounded-xl flex items-center justify-center"
+          >
+            <i data-lucide="award" class="w-6 h-6 text-blue-500"></i>
+          </div>
+          <span
+            class="text-xs text-text-muted bg-blue-100 px-2 py-1 rounded-full"
+            >Records</span
+          >
+        </div>
+        <div class="text-3xl font-bold text-text-dark mb-1">
+          {{ total_grades }}
+        </div>
+        <div class="text-sm text-text-muted">Total Grades</div>
+      </div>
+
+      <!-- Quick Stats -->
+      <div
+        class="bg-gradient-to-br from-primary-green to-emerald-600 rounded-xl p-6 shadow-lg hover:shadow-2xl transform hover:-translate-y-1 transition-all duration-300 animate-scale-in text-white"
+        style="animation-delay: 0.4s"
+      >
+        <div class="flex items-center justify-between mb-4">
+          <div
+            class="h-12 w-12 bg-white/20 rounded-xl flex items-center justify-center"
+          >
+            <i data-lucide="trending-up" class="w-6 h-6 text-white"></i>
+          </div>
+          <span class="text-xs bg-white/20 px-2 py-1 rounded-full"
+            >This Term</span
+          >
+        </div>
+        <div class="text-3xl font-bold mb-1" id="avgGrade">--</div>
+        <div class="text-sm opacity-90">Average Grade</div>
+      </div>
+    </div>
+
+    <!-- Main Content Grid -->
+    <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+      <!-- Left: Recent Grades (2 cols) and selectors -->
+      <!-- Recent Grades Table -->
+      <div
+        class="lg:col-span-2 bg-white rounded-xl p-6 shadow-lg animate-slide-up"
+      >
+        <div class="flex items-center justify-between mb-4">
+          <div class="flex gap-3 items-center">
+            <select id="dashboardSubject" class="px-3 py-2 border rounded-lg">
+              <option value="">All Subjects</option>
+              {% for subj in dashboard_subjects %}
+              <option value="{{ subj.id }}">
+                {{ subj.subject_code }} - {{ subj.subject_name }}
+              </option>
+              {% endfor %}
+            </select>
+            <select id="dashboardStudent" class="px-3 py-2 border rounded-lg">
+              <option value="">All Students</option>
+              {% for s in dashboard_students %}
+              <option value="{{ s.id }}">
+                {{ s.student_id }} - {{ s.first_name }} {{ s.last_name }}
+              </option>
+              {% endfor %}
+            </select>
+            <select id="dashboardClass" class="px-3 py-2 border rounded-lg">
+              <option value="">All Classes / Programs</option>
+            </select>
+            <!-- Apply/Clear buttons moved below the table to avoid overlap with Quick Actions -->
+          </div>
+          <div></div>
+        </div>
+        <div class="flex items-center justify-between mb-6">
+          <h2 class="text-xl font-bold text-text-dark">
+            <i
+              data-lucide="clock"
+              class="w-5 h-5 inline mr-2 text-primary-green"
+            ></i>
+            Recent Grades
+          </h2>
+          <a
+            href="{{ url_for('grades') }}"
+            class="text-sm text-primary-green hover:text-emerald-700 font-medium transition-colors"
+          >
+            View All →
+          </a>
+        </div>
+
+        <div class="overflow-x-auto">
+          <table class="w-full">
+            <thead>
+              <tr class="border-b border-gray-200">
+                <th
+                  class="px-4 py-3 text-left text-xs font-semibold text-text-muted uppercase"
+                >
+                  Student
+                </th>
+                <th
+                  class="px-4 py-3 text-left text-xs font-semibold text-text-muted uppercase"
+                >
+                  Subject
+                </th>
+                <th
+                  class="px-4 py-3 text-left text-xs font-semibold text-text-muted uppercase"
+                >
+                  Grade
+                </th>
+                <th
+                  class="px-4 py-3 text-left text-xs font-semibold text-text-muted uppercase"
+                >
+                  Status
+                </th>
+              </tr>
+            </thead>
+            <tbody>
+              {% if recent_grades %} {% for grade in recent_grades[:8] %}
+              <tr
+                class="border-b border-gray-100 hover:bg-gray-50 transition-colors"
+              >
+                <td class="px-4 py-3">
+                  <div class="font-medium text-text-dark">
+                    {{ grade.first_name }} {{ grade.last_name }}
+                  </div>
+                  <div class="text-xs text-text-muted">{{ grade.sid }}</div>
+                </td>
+                <td class="px-4 py-3 text-sm text-text-dark">
+                  {{ grade.subject_code }}
+                </td>
+                <td class="px-4 py-3">
+                  <span
+                    class="text-lg font-bold {% if grade.final_grade >= 90 %}text-green-600{% elif grade.final_grade >= 75 %}text-blue-600{% else %}text-red-600{% endif %}"
+                  >
+                    {{ "%.2f"|format(grade.final_grade) }}
+                  </span>
+                </td>
+                <td class="px-4 py-3">
+                  {% if grade.final_grade >= 75 %}
+                  <span
+                    class="px-3 py-1 text-xs font-semibold text-green-700 bg-green-100 rounded-full"
+                    >PASSED</span
+                  >
+                  {% else %}
+                  <span
+                    class="px-3 py-1 text-xs font-semibold text-red-700 bg-red-100 rounded-full"
+                    >FAILED</span
+                  >
+                  {% endif %}
+                </td>
+              </tr>
+              {% endfor %} {% else %}
+              <tr>
+                <td colspan="4" class="px-4 py-8 text-center text-text-muted">
+                  <i
+                    data-lucide="inbox"
+                    class="w-12 h-12 mx-auto mb-2 opacity-50"
+                  ></i>
+                  <p>No grades recorded yet</p>
+                </td>
+              </tr>
+              {% endif %}
+            </tbody>
+          </table>
+        </div>
+        <div class="flex justify-end gap-3 mt-4">
+          <button
+            id="dashboardApply"
+            class="px-3 py-2 bg-primary-green text-white rounded-lg"
+          >
+            Apply
+          </button>
+          <button id="dashboardReset" class="px-3 py-2 bg-gray-100 rounded-lg">
+            Clear
+          </button>
+        </div>
+      </div>
+
+      <!-- Quick Actions & Stats -->
+      <div class="space-y-6">
+        <!-- Profile Panel -->
+        <!-- Profile moved to header -->
+        <!-- Quick Actions -->
+        <div
+          class="bg-white rounded-xl p-6 shadow-lg animate-slide-up"
+          style="animation-delay: 0.1s"
+        >
+          <h3 class="text-lg font-bold text-text-dark mb-4">
+            <i
+              data-lucide="zap"
+              class="w-5 h-5 inline mr-2 text-secondary-gold"
+            ></i>
+            Quick Actions
+          </h3>
+          <div class="space-y-3">
+            <a
+              href="{{ url_for('add_student') }}"
+              class="block p-3 bg-gradient-to-r from-primary-green/10 to-emerald-50 rounded-lg hover:from-primary-green/20 hover:to-emerald-100 transition-all duration-200 group"
+            >
+              <div class="flex items-center gap-3">
+                <div
+                  class="h-10 w-10 bg-primary-green rounded-lg flex items-center justify-center group-hover:scale-110 transition-transform"
+                >
+                  <i data-lucide="user-plus" class="w-5 h-5 text-white"></i>
+                </div>
+                <div>
+                  <div class="font-semibold text-text-dark">Add Student</div>
+                  <div class="text-xs text-text-muted">
+                    Register new student
+                  </div>
+                </div>
+              </div>
+            </a>
+
+            <a
+              href="{{ url_for('add_subject') }}"
+              class="block p-3 bg-gradient-to-r from-secondary-gold/10 to-yellow-50 rounded-lg hover:from-secondary-gold/20 hover:to-yellow-100 transition-all duration-200 group"
+            >
+              <div class="flex items-center gap-3">
+                <div
+                  class="h-10 w-10 bg-secondary-gold rounded-lg flex items-center justify-center group-hover:scale-110 transition-transform"
+                >
+                  <i data-lucide="book-plus" class="w-5 h-5 text-white"></i>
+                </div>
+                <div>
+                  <div class="font-semibold text-text-dark">Add Subject</div>
+                  <div class="text-xs text-text-muted">Create new course</div>
+                </div>
+              </div>
+            </a>
+
+            <a
+              href="{{ url_for('add_grade') }}"
+              class="block p-3 bg-gradient-to-r from-blue-500/10 to-blue-50 rounded-lg hover:from-blue-500/20 hover:to-blue-100 transition-all duration-200 group"
+            >
+              <div class="flex items-center gap-3">
+                <div
+                  class="h-10 w-10 bg-blue-500 rounded-lg flex items-center justify-center group-hover:scale-110 transition-transform"
+                >
+                  <i data-lucide="file-plus" class="w-5 h-5 text-white"></i>
+                </div>
+                <div>
+                  <div class="font-semibold text-text-dark">Add Grade</div>
+                  <div class="text-xs text-text-muted">Record new grade</div>
+                </div>
+              </div>
+            </a>
+          </div>
+        </div>
+
+        <!-- Performance Stats -->
+        <div
+          class="bg-gradient-to-br from-indigo-500 to-purple-600 rounded-xl p-6 shadow-lg text-white animate-slide-up"
+          style="animation-delay: 0.2s"
+        >
+          <h3 class="text-lg font-bold mb-4">
+            <i data-lucide="bar-chart-2" class="w-5 h-5 inline mr-2"></i>
+            Performance Stats
+          </h3>
+          <div class="space-y-4">
+            <div>
+              <div class="flex justify-between items-center mb-2">
+                <span class="text-sm opacity-90">Passing Rate</span>
+                <span class="font-bold" id="passingRate">0%</span>
+              </div>
+              <div class="w-full bg-white/20 rounded-full h-2">
+                <div
+                  class="bg-white rounded-full h-2 transition-all duration-500"
+                  id="passingBar"
+                  style="width: 0%"
+                ></div>
+              </div>
+            </div>
+            <div class="pt-3 border-t border-white/20">
+              <div class="text-sm opacity-90 mb-1">Total Records</div>
+              <div class="text-2xl font-bold">{{ total_grades }}</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script id="recentGradesData" type="application/json">
+  {{ recent_grades | tojson | safe }}
+</script>
+<script src="{{ url_for('static', filename='dashboard.js') }}"></script>
+{% endblock %}

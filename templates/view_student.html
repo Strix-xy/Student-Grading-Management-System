@@ -1,0 +1,112 @@
+{% extends "base.html" %} {% block title %}View Student - Student Grading
+System{% endblock %} {% block content %}
+<div class="p-7">
+  <div class="max-w-3xl mx-auto">
+    <a
+      href="{{ url_for('students') }}"
+      class="inline-flex items-center text-primary-green hover:text-emerald-700 transition-colors mb-4"
+    >
+      <i data-lucide="arrow-left" class="w-5 h-5 mr-2"></i>
+      Back to Students
+    </a>
+
+    <div class="bg-white rounded-xl shadow-lg p-6">
+      <div class="flex items-start gap-4">
+        <div
+          class="h-20 w-20 rounded-full bg-gradient-to-br from-primary-green to-emerald-600 flex items-center justify-center text-white font-bold text-2xl"
+        >
+          {{ student.first_name[0] }}{{ student.last_name[0] }}
+        </div>
+        <div>
+          <h2 class="text-2xl font-bold text-text-dark">
+            {{ student.first_name }} {{ student.last_name }}
+          </h2>
+          <p class="text-sm text-text-muted">
+            Student ID: {{ student.student_id }}
+          </p>
+          <p class="text-sm text-text-muted">Email: {{ student.email }}</p>
+        </div>
+      </div>
+
+      <div class="mt-6 grid grid-cols-1 md:grid-cols-2 gap-4">
+        <div class="p-4 bg-gray-50 rounded-lg">
+          <h4 class="font-semibold text-text-dark">Enrollment</h4>
+          <p class="text-sm text-text-muted">
+            Program:
+            <span class="font-medium text-text-dark"
+              >{{ student.section }}</span
+            >
+          </p>
+          <p class="text-sm text-text-muted">
+            Year Level:
+            <span class="font-medium text-text-dark"
+              >{{ student.year_level }}</span
+            >
+          </p>
+          <p class="text-sm text-text-muted">
+            Education Level:
+            <span class="font-medium text-text-dark"
+              >{{ student.education_level }}</span
+            >
+          </p>
+          <p class="text-sm text-text-muted">
+            School Year:
+            <span class="font-medium text-text-dark"
+              >{{ student.school_year }}</span
+            >
+          </p>
+        </div>
+
+        <div class="p-4 bg-gray-50 rounded-lg">
+          <h4 class="font-semibold text-text-dark">Meta</h4>
+          <p class="text-sm text-text-muted">
+            Created: {{ student.created_at[:19] if student.created_at else 'N/A'
+            }}
+          </p>
+        </div>
+      </div>
+
+      <div class="mt-6 flex gap-3">
+        <a
+          href="{{ url_for('edit_student', student_id=student.id) }}"
+          class="px-4 py-2 bg-primary-green text-white rounded-lg"
+          >Edit</a
+        >
+        <button
+          id="deleteStudentBtn"
+          data-student-id="{{ student.id }}"
+          data-student-name="{{ student.first_name }} {{ student.last_name }}"
+          class="px-4 py-2 bg-red-600 text-white rounded-lg"
+        >
+          Delete
+        </button>
+        <a
+          href="{{ url_for('students') }}"
+          class="px-4 py-2 bg-gray-100 rounded-lg"
+          >Close</a
+        >
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+  // Attach delete handler for view page button
+  (function () {
+    const btn = document.getElementById("deleteStudentBtn");
+    if (!btn) return;
+    btn.addEventListener("click", function () {
+      const id = this.dataset.studentId;
+      const name = this.dataset.studentName;
+      if (!confirm(`Are you sure you want to delete ${name}?`)) return;
+      fetch(`/students/delete/${id}`, { method: "POST" })
+        .then((r) => {
+          if (r.status === 204)
+            window.location.href = "{{ url_for('students') }}";
+          else alert("Failed to delete");
+        })
+        .catch(() => alert("Network error"));
+    });
+  })();
+</script>
+{% endblock %}

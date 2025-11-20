@@ -1,0 +1,472 @@
+{% extends "base.html" %} {% block title %}Add Grade - Student Grading System{%
+endblock %} {% block content %}
+<div class="min-h-screen p-7">
+  <div class="max-w-4xl mx-auto">
+    <!-- Header -->
+    <div class="mb-8 animate-slide-down">
+      <a
+        href="{{ url_for('grades') }}"
+        class="inline-flex items-center text-blue-500 hover:text-indigo-700 transition-colors mb-4"
+      >
+        <i data-lucide="arrow-left" class="w-5 h-5 mr-2"></i>
+        Back to Grades
+      </a>
+      <h1 class="text-3xl font-bold text-text-dark mb-2">
+        <i
+          data-lucide="file-plus"
+          class="w-8 h-8 inline mr-2 text-blue-500"
+        ></i>
+        Record New Grade
+      </h1>
+      <p class="text-text-muted">
+        Enter student performance data for a specific subject and quarter
+      </p>
+    </div>
+
+    <!-- Form Card -->
+    <div
+      class="bg-white rounded-2xl shadow-2xl overflow-hidden animate-scale-in"
+    >
+      <div class="bg-gradient-to-r from-blue-500 to-indigo-600 px-8 py-6">
+        <h2 class="text-2xl font-bold text-white">Grade Information</h2>
+        <p class="text-white/90 text-sm mt-1">
+          Fill in all the grading details below
+        </p>
+      </div>
+
+      <form method="POST" action="{{ url_for('add_grade') }}" class="p-8">
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+          <!-- Student Selection -->
+          <div class="group md:col-span-2">
+            <label
+              for="student_id"
+              class="block text-sm font-semibold text-text-dark mb-2"
+            >
+              <i
+                data-lucide="user"
+                class="w-4 h-4 inline mr-1 text-blue-500"
+              ></i>
+              Select Student <span class="text-red-500">*</span>
+            </label>
+            <select
+              id="student_id"
+              name="student_id"
+              required
+              class="w-full px-4 py-3 border-2 border-gray-200 rounded-xl focus:border-blue-500 focus:ring-2 focus:ring-blue-500/20 outline-none transition-all duration-200 group-hover:border-gray-300"
+            >
+              <option value="">Choose a student...</option>
+              {% for student in students %}
+              <option
+                value="{{ student.id }}"
+                data-education="{{ student.education_level if student.education_level else 'Secondary' }}"
+              >
+                {{ student.student_id }} - {{ student.first_name }} {{
+                student.last_name }} ({{ student.section }})
+              </option>
+              {% endfor %}
+            </select>
+          </div>
+
+          <!-- Subject Selection -->
+          <div class="group md:col-span-2">
+            <label
+              for="subject_id"
+              class="block text-sm font-semibold text-text-dark mb-2"
+            >
+              <i
+                data-lucide="book-open"
+                class="w-4 h-4 inline mr-1 text-blue-500"
+              ></i>
+              Select Subject <span class="text-red-500">*</span>
+            </label>
+            <select
+              id="subject_id"
+              name="subject_id"
+              required
+              class="w-full px-4 py-3 border-2 border-gray-200 rounded-xl focus:border-blue-500 focus:ring-2 focus:ring-blue-500/20 outline-none transition-all duration-200 group-hover:border-gray-300"
+            >
+              <option value="">Choose a subject...</option>
+              {% for subject in subjects %}
+              <option
+                value="{{ subject.id }}"
+                data-education="{{ subject.education_level if subject.education_level else 'Secondary' }}"
+              >
+                {{ subject.subject_code }} - {{ subject.subject_name }}
+              </option>
+              {% endfor %}
+            </select>
+          </div>
+
+          <!-- Quarter Selection -->
+          <div class="group">
+            <label
+              for="quarter"
+              class="block text-sm font-semibold text-text-dark mb-2"
+            >
+              <i
+                data-lucide="calendar"
+                class="w-4 h-4 inline mr-1 text-blue-500"
+              ></i>
+              Quarter <span class="text-red-500">*</span>
+            </label>
+            <select
+              id="quarter"
+              name="quarter"
+              required
+              class="w-full px-4 py-3 border-2 border-gray-200 rounded-xl focus:border-blue-500 focus:ring-2 focus:ring-blue-500/20 outline-none transition-all duration-200 group-hover:border-gray-300"
+            >
+              <option value="">Select quarter...</option>
+              <option value="1st Quarter">1st Quarter</option>
+              <option value="2nd Quarter">2nd Quarter</option>
+              <option value="3rd Quarter">3rd Quarter</option>
+              <option value="4th Quarter">4th Quarter</option>
+            </select>
+          </div>
+
+          <!-- Spacer -->
+          <div></div>
+
+          <!-- Prelim Grade -->
+          <div class="group" id="prelimGroup">
+            <label
+              for="prelim"
+              class="block text-sm font-semibold text-text-dark mb-2"
+            >
+              <i
+                data-lucide="clipboard"
+                class="w-4 h-4 inline mr-1 text-blue-500"
+              ></i>
+              Prelim Grade <span class="text-red-500">*</span>
+            </label>
+            <input
+              type="number"
+              id="prelim"
+              name="prelim"
+              required
+              min="0"
+              max="100"
+              step="0.01"
+              class="w-full px-4 py-3 border-2 border-gray-200 rounded-xl focus:border-blue-500 focus:ring-2 focus:ring-blue-500/20 outline-none transition-all duration-200 group-hover:border-gray-300"
+              placeholder="0.00"
+              oninput="calculateFinalGrade()"
+            />
+            <p class="text-xs text-text-muted mt-1">0-100 scale</p>
+          </div>
+
+          <!-- Midterm Grade -->
+          <div class="group">
+            <label
+              for="midterm"
+              class="block text-sm font-semibold text-text-dark mb-2"
+            >
+              <i
+                data-lucide="clipboard"
+                class="w-4 h-4 inline mr-1 text-blue-500"
+              ></i>
+              Midterm Grade <span class="text-red-500">*</span>
+            </label>
+            <input
+              type="number"
+              id="midterm"
+              name="midterm"
+              required
+              min="0"
+              max="100"
+              step="0.01"
+              class="w-full px-4 py-3 border-2 border-gray-200 rounded-xl focus:border-blue-500 focus:ring-2 focus:ring-blue-500/20 outline-none transition-all duration-200 group-hover:border-gray-300"
+              placeholder="0.00"
+              oninput="calculateFinalGrade()"
+            />
+            <p class="text-xs text-text-muted mt-1">0-100 scale</p>
+          </div>
+
+          <!-- Finals Grade -->
+          <div class="group">
+            <label
+              for="finals"
+              class="block text-sm font-semibold text-text-dark mb-2"
+            >
+              <i
+                data-lucide="clipboard-check"
+                class="w-4 h-4 inline mr-1 text-blue-500"
+              ></i>
+              Finals Grade <span class="text-red-500">*</span>
+            </label>
+            <input
+              type="number"
+              id="finals"
+              name="finals"
+              required
+              min="0"
+              max="100"
+              step="0.01"
+              class="w-full px-4 py-3 border-2 border-gray-200 rounded-xl focus:border-blue-500 focus:ring-2 focus:ring-blue-500/20 outline-none transition-all duration-200 group-hover:border-gray-300"
+              placeholder="0.00"
+              oninput="calculateFinalGrade()"
+            />
+            <p class="text-xs text-text-muted mt-1">0-100 scale</p>
+          </div>
+        </div>
+
+        <!-- Grade Calculator Preview -->
+        <div
+          class="mt-8 p-6 bg-gradient-to-br from-blue-50 to-indigo-50 rounded-xl border-2 border-blue-200"
+        >
+          <h3 class="font-bold text-text-dark mb-4 flex items-center gap-2">
+            <i data-lucide="calculator" class="w-5 h-5 text-blue-500"></i>
+            Grade Calculation Preview
+          </h3>
+          <div class="grid grid-cols-3 gap-4 mb-4">
+            <div class="text-center">
+              <div class="text-xs text-text-muted mb-1">Prelim (33.3%)</div>
+              <div class="text-2xl font-bold text-blue-600" id="previewPrelim">
+                0
+              </div>
+            </div>
+            <div class="text-center">
+              <div class="text-xs text-text-muted mb-1">Midterm (33.3%)</div>
+              <div class="text-2xl font-bold text-blue-600" id="previewMidterm">
+                0
+              </div>
+            </div>
+            <div class="text-center">
+              <div class="text-xs text-text-muted mb-1">Finals (33.3%)</div>
+              <div class="text-2xl font-bold text-blue-600" id="previewFinals">
+                0
+              </div>
+            </div>
+          </div>
+          <div
+            class="pt-4 border-t-2 border-blue-300 flex items-center justify-between"
+          >
+            <div>
+              <div class="text-sm text-text-muted mb-1">Final Grade</div>
+              <div class="text-4xl font-extrabold" id="finalGradeDisplay">
+                0.00
+              </div>
+            </div>
+            <div>
+              <div class="text-sm text-text-muted mb-2 text-right">Status</div>
+              <span
+                id="statusBadge"
+                class="px-4 py-2 text-sm font-bold rounded-full bg-gray-200 text-gray-700"
+              >
+                Calculating...
+              </span>
+            </div>
+          </div>
+        </div>
+
+        <!-- Information Box -->
+        <div
+          class="mt-6 p-4 bg-yellow-50 border-l-4 border-yellow-500 rounded-lg"
+        >
+          <div class="flex items-start gap-3">
+            <i
+              data-lucide="info"
+              class="w-5 h-5 text-yellow-600 flex-shrink-0 mt-0.5"
+            ></i>
+            <div>
+              <h4 class="text-sm font-semibold text-yellow-900 mb-1">
+                Grading System
+              </h4>
+              <p class="text-xs text-yellow-800">
+                • Final Grade = (Prelim + Midterm + Finals) ÷ 3<br />
+                • Passing Grade: 75.00 and above<br />
+                • Grades are saved with 2 decimal places
+              </p>
+            </div>
+          </div>
+        </div>
+
+        <!-- Action Buttons -->
+        <div class="mt-8 flex flex-col sm:flex-row gap-4">
+          <button
+            type="submit"
+            class="flex-1 px-6 py-4 bg-gradient-to-r from-blue-500 to-indigo-600 text-white font-semibold rounded-xl shadow-lg hover:shadow-2xl transform hover:-translate-y-1 transition-all duration-300 flex items-center justify-center gap-2"
+          >
+            <i data-lucide="check" class="w-5 h-5"></i>
+            Save Grade
+          </button>
+          <button
+            type="reset"
+            onclick="calculateFinalGrade()"
+            class="px-6 py-4 bg-gray-100 text-gray-700 font-semibold rounded-xl hover:bg-gray-200 transition-all duration-200 flex items-center justify-center gap-2"
+          >
+            <i data-lucide="refresh-cw" class="w-5 h-5"></i>
+            Reset
+          </button>
+          <a
+            href="{{ url_for('grades') }}"
+            class="px-6 py-4 bg-white border-2 border-gray-300 text-gray-700 font-semibold rounded-xl hover:bg-gray-50 transition-all duration-200 flex items-center justify-center gap-2"
+          >
+            <i data-lucide="x" class="w-5 h-5"></i>
+            Cancel
+          </a>
+        </div>
+      </form>
+    </div>
+
+    <!-- Quick Tips -->
+    <div class="mt-8 grid md:grid-cols-3 gap-4 animate-slide-up">
+      <div class="bg-white rounded-xl p-4 shadow-md">
+        <div class="flex items-start gap-3">
+          <div
+            class="h-10 w-10 bg-blue-100 rounded-lg flex items-center justify-center flex-shrink-0"
+          >
+            <i data-lucide="zap" class="w-5 h-5 text-blue-500"></i>
+          </div>
+          <div>
+            <h4 class="font-semibold text-text-dark text-sm mb-1">
+              Quick Entry
+            </h4>
+            <p class="text-xs text-text-muted">
+              Final grade is calculated automatically
+            </p>
+          </div>
+        </div>
+      </div>
+
+      <div class="bg-white rounded-xl p-4 shadow-md">
+        <div class="flex items-start gap-3">
+          <div
+            class="h-10 w-10 bg-green-100 rounded-lg flex items-center justify-center flex-shrink-0"
+          >
+            <i data-lucide="shield-check" class="w-5 h-5 text-green-500"></i>
+          </div>
+          <div>
+            <h4 class="font-semibold text-text-dark text-sm mb-1">
+              Validation
+            </h4>
+            <p class="text-xs text-text-muted">
+              All grades must be between 0-100
+            </p>
+          </div>
+        </div>
+      </div>
+
+      <div class="bg-white rounded-xl p-4 shadow-md">
+        <div class="flex items-start gap-3">
+          <div
+            class="h-10 w-10 bg-purple-100 rounded-lg flex items-center justify-center flex-shrink-0"
+          >
+            <i data-lucide="clock" class="w-5 h-5 text-purple-500"></i>
+          </div>
+          <div>
+            <h4 class="font-semibold text-text-dark text-sm mb-1">Auto Save</h4>
+            <p class="text-xs text-text-muted">
+              Grades are permanently saved on submission
+            </p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+  function calculateFinalGrade() {
+    const prelimEl = document.getElementById("prelim");
+    const prelim =
+      prelimEl && !prelimEl.disabled ? parseFloat(prelimEl.value) || 0 : 0;
+    const midterm = parseFloat(document.getElementById("midterm").value) || 0;
+    const finals = parseFloat(document.getElementById("finals").value) || 0;
+    // If prelim is disabled (tertiary), calculate as average of midterm and finals
+    let finalGrade = 0;
+    if (prelimEl && prelimEl.disabled) {
+      finalGrade = (midterm + finals) / 2;
+    } else {
+      finalGrade = (prelim + midterm + finals) / 3;
+    }
+
+    // Update preview
+    document.getElementById("previewPrelim").textContent = prelim.toFixed(1);
+    document.getElementById("previewMidterm").textContent = midterm.toFixed(1);
+    document.getElementById("previewFinals").textContent = finals.toFixed(1);
+    document.getElementById("finalGradeDisplay").textContent =
+      finalGrade.toFixed(2);
+
+    // Update status badge
+    const statusBadge = document.getElementById("statusBadge");
+    const displayGrade = document.getElementById("finalGradeDisplay");
+
+    if (finalGrade >= 75) {
+      statusBadge.className =
+        "px-4 py-2 text-sm font-bold rounded-full bg-green-100 text-green-700";
+      statusBadge.textContent = "PASSED ✓";
+      displayGrade.className = "text-4xl font-extrabold text-green-600";
+    } else if (finalGrade > 0) {
+      statusBadge.className =
+        "px-4 py-2 text-sm font-bold rounded-full bg-red-100 text-red-700";
+      statusBadge.textContent = "FAILED ✗";
+      displayGrade.className = "text-4xl font-extrabold text-red-600";
+    } else {
+      statusBadge.className =
+        "px-4 py-2 text-sm font-bold rounded-full bg-gray-200 text-gray-700";
+      statusBadge.textContent = "Calculating...";
+      displayGrade.className = "text-4xl font-extrabold text-gray-600";
+    }
+  }
+
+  // Initialize calculation
+  document.addEventListener("DOMContentLoaded", calculateFinalGrade);
+
+  // Adjust form based on selected student's education level
+  document.getElementById("student_id").addEventListener("change", function () {
+    const opt = this.options[this.selectedIndex];
+    const edu = opt ? opt.getAttribute("data-education") : null;
+    applyEducationSettings(edu);
+  });
+
+  function applyEducationSettings(educationLevel) {
+    const quarter = document.getElementById("quarter");
+    const prelimGroup = document.getElementById("prelimGroup");
+    const prelim = document.getElementById("prelim");
+
+    // Reset quarter options
+    quarter.innerHTML = "";
+    const defaultOpt = document.createElement("option");
+    defaultOpt.value = "";
+    defaultOpt.textContent =
+      educationLevel === "Tertiary"
+        ? "Select semester..."
+        : "Select quarter...";
+    quarter.appendChild(defaultOpt);
+
+    if (educationLevel === "Tertiary") {
+      // Semesters
+      ["Semester 1", "Semester 2"].forEach((s) => {
+        const o = document.createElement("option");
+        o.value = s;
+        o.textContent = s;
+        quarter.appendChild(o);
+      });
+      // Hide/disable prelim
+      if (prelim) {
+        prelim.value = 0;
+        prelim.disabled = true;
+      }
+      if (prelimGroup) {
+        prelimGroup.style.display = "none";
+      }
+    } else {
+      // Quarters
+      ["1st Quarter", "2nd Quarter", "3rd Quarter", "4th Quarter"].forEach(
+        (s) => {
+          const o = document.createElement("option");
+          o.value = s;
+          o.textContent = s;
+          quarter.appendChild(o);
+        }
+      );
+      if (prelim) {
+        prelim.disabled = false;
+      }
+      if (prelimGroup) {
+        prelimGroup.style.display = "";
+      }
+    }
+    calculateFinalGrade();
+  }
+</script>
+{% endblock %}
